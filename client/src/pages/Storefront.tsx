@@ -209,4 +209,14 @@ export function CartPage() { const { cart, loading, updateQuantity, removeItem, 
 
 export function NotFoundPage() { return <main className="inner-page not-found"><p className="eyebrow">404</p><h1>NOT FOUND.</h1><Link href="/" className="primary-button">BACK HOME <ArrowRight size={16} /></Link></main>; }
 
-export function StorefrontLayout({ children }: { children: React.ReactNode }) { return <div className="site-shell"><Header />{children}<Footer /><CartDrawer /></div>; }
+export function scrollToPageTop(target: Pick<Window, "scrollTo"> | undefined = typeof window === "undefined" ? undefined : window) {
+  target?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+}
+
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => { scrollToPageTop(); }, [location]);
+  return null;
+}
+
+export function StorefrontLayout({ children }: { children: React.ReactNode }) { return <div className="site-shell"><ScrollToTop /><Header />{children}<Footer /><CartDrawer /></div>; }

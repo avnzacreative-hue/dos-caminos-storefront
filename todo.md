@@ -24,3 +24,4 @@
 - [x] Validate the expanded Shopify catalog and responsive Archivo pages before saving the update.
 - [x] Remove the original Archivo No. 01 Tee from the active Shopify assortment and confirm it is absent from the Archivo collection.
 - [x] Reduce the mobile header footprint, improve tap-target spacing, and rebalance the homepage hero crop and wordmark placement above the fold.
+- [x] Reset viewport scroll to the top on every internal storefront route transition, including listings, product pages, and informational pages.
