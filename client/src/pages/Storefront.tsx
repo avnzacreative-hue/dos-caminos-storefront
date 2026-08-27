@@ -1,0 +1,195 @@
+import { useCart } from "@/contexts/CartContext";
+import { trpc } from "@/lib/trpc";
+import type { CartItem, Money, Product, ProductVariant } from "@shared/commerce/types";
+import { FIT_MEASURES, getProductDetail, getProductImage, matchesCollection } from "@shared/storefrontData";
+import { ArrowRight, ArrowUpRight, ChevronDown, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useRoute } from "wouter";
+
+const HERO_IMAGE = "/manus-storage/dos-caminos-hero_ff1bf96d.jpg";
+
+function formatMoney(money?: Money | null) {
+  if (!money) return "—";
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: money.currencyCode, maximumFractionDigits: 0 }).format(Number(money.amount));
+}
+
+function Header() {
+  const [location, setLocation] = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [term, setTerm] = useState("");
+  const { itemCount, openCart } = useCart();
+  const home = location === "/";
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  function onSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const query = term.trim();
+    setSearching(false);
+    setLocation(query ? `/collections/all?q=${encodeURIComponent(query)}` : "/collections/all");
+  }
+
+  return (
+    <header className={`site-header ${home && !scrolled ? "over-hero" : "on-bone"}`}>
+      <div className="announcement">NEXT DROP — SEPTEMBER 18, 10:00 AM PT</div>
+      <div className="nav-frame">
+        <Link href="/" className="wordmark" aria-label="Dos Caminos home">DOS CAMINOS</Link>
+        <nav className="main-nav" aria-label="Primary navigation">
+          <Link href="/collections/blanks">BLANKS</Link>
+          <Link href="/collections/archivo">ARCHIVO</Link>
+          <Link href="/pages/fit">FIT</Link>
+          <Link href="/pages/about">ABOUT</Link>
+        </nav>
+        <div className="nav-actions">
+          <button className="icon-button" onClick={() => setSearching(value => !value)} aria-label="Search products" aria-expanded={searching}>
+            {searching ? <X size={17} strokeWidth={1.7} /> : <Search size={17} strokeWidth={1.7} />}
+          </button>
+          <button className="cart-trigger" onClick={openCart} aria-label={`Open cart, ${itemCount} items`}>
+            <ShoppingBag size={17} strokeWidth={1.7} />
+            <span>({itemCount})</span>
+          </button>
+        </div>
+      </div>
+      {searching && (
+        <form className="search-tray" onSubmit={onSearch} role="search">
+          <label className="sr-only" htmlFor="site-search">Search product names</label>
+          <input id="site-search" value={term} onChange={event => setTerm(event.target.value)} placeholder="SEARCH PRODUCT NAMES" autoFocus />
+          <button type="submit" aria-label="Submit search"><ArrowRight size={18} strokeWidth={1.6} /></button>
+        </form>
+      )}
+    </header>
+  );
+}
+
+function Newsletter({ compact = false }: { compact?: boolean }) {
+  const [submitted, setSubmitted] = useState(false);
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitted(true);
+  }
+  return (
+    <form className={`newsletter ${compact ? "newsletter-compact" : ""}`} onSubmit={submit}>
+      {submitted ? <p className="newsletter-confirm">YOU’RE ON THE LIST.</p> : <>
+        <label className="sr-only" htmlFor={compact ? "footer-email" : "drop-email"}>Email address</label>
+        <input id={compact ? "footer-email" : "drop-email"} required type="email" placeholder="EMAIL ADDRESS" />
+        <button type="submit" aria-label="Submit email"><ArrowRight size={18} strokeWidth={1.5} /></button>
+      </>}
+    </form>
+  );
+}
+
+function Footer() {
+  return <footer className="site-footer">
+    <div className="footer-news"><p className="eyebrow">DROP NOTES</p><h2>IN THE KNOW, ONLY WHEN IT MATTERS.</h2><Newsletter compact /></div>
+    <div className="footer-links">
+      <div><p className="footer-label">SHOP</p><Link href="/collections/blanks">Blanks</Link><Link href="/collections/archivo">Archivo</Link><Link href="/collections/all">Shop All</Link></div>
+      <div><p className="footer-label">INFO</p><Link href="/pages/fit">Fit Guide</Link><a href="#care">Care</a><a href="#shipping">Shipping &amp; Returns</a></div>
+      <div><p className="footer-label">COMPANY</p><Link href="/pages/about">About</Link><a href="mailto:hello@doscaminos.example">Contact</a><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></div>
+    </div>
+    <div className="footer-bottom"><span>© 2026 DOS CAMINOS</span><span>MADE FOR EVERYDAY</span></div>
+  </footer>;
+}
+
+function CartDrawer() {
+  const { cart, isOpen, closeCart, loading, updateQuantity, removeItem, proceedToCheckout } = useCart();
+  const items = cart?.items ?? [];
+  return <>
+    <div className={`cart-scrim ${isOpen ? "show" : ""}`} onClick={closeCart} aria-hidden="true" />
+    <aside className={`cart-drawer ${isOpen ? "open" : ""}`} aria-label="Shopping cart" aria-hidden={!isOpen}>
+      <div className="cart-drawer-head"><p className="eyebrow">YOUR CART</p><button className="icon-button" onClick={closeCart} aria-label="Close cart"><X size={19} strokeWidth={1.5} /></button></div>
+      <div className="cart-items">
+        {items.length === 0 ? <div className="empty-cart"><p>Your cart is empty.</p><Link href="/collections/all" onClick={closeCart}>SHOP THE DROP <ArrowUpRight size={15} /></Link></div> : items.map(item => <CartLine key={item.lineId} item={item} loading={loading} onUpdate={updateQuantity} onRemove={removeItem} />)}
+      </div>
+      <div className="cart-summary"><div><span>SUBTOTAL</span><strong>{formatMoney(cart?.subtotal)}</strong></div><button className="primary-button" onClick={proceedToCheckout} disabled={!items.length || loading}>CHECKOUT <ArrowUpRight size={16} /></button><p>Taxes and shipping calculated at checkout.</p></div>
+    </aside>
+  </>;
+}
+
+function CartLine({ item, loading, onUpdate, onRemove }: { item: CartItem; loading: boolean; onUpdate: (id: string, q: number) => Promise<void>; onRemove: (id: string) => Promise<void> }) {
+  return <article className="cart-line"><img src={item.image?.url ?? getProductImage(item.productHandle)} alt="" /><div className="cart-line-detail"><div><h3>{item.productTitle}</h3>{item.variantTitle !== "Default Title" && <p>{item.variantTitle}</p>}<strong>{formatMoney(item.lineTotal)}</strong></div><div className="cart-line-actions"><div className="quantity-control"><button disabled={loading} onClick={() => onUpdate(item.lineId, item.quantity - 1)} aria-label="Decrease quantity"><Minus size={13} /></button><span>{item.quantity}</span><button disabled={loading} onClick={() => onUpdate(item.lineId, item.quantity + 1)} aria-label="Increase quantity"><Plus size={13} /></button></div><button disabled={loading} className="text-button" onClick={() => onRemove(item.lineId)} aria-label={`Remove ${item.productTitle}`}><Trash2 size={15} /></button></div></div></article>;
+}
+
+function ProductCard({ product, archive = false }: { product: Product; archive?: boolean }) {
+  const detail = getProductDetail(product.handle);
+  const image = getProductImage(product.handle);
+  return <Link href={`/products/${product.handle}`} className={`product-card ${archive ? "archivo-card" : ""}`}>
+    <div className="product-image"><img src={image} alt={product.images[0]?.altText ?? product.title} loading="lazy" /></div>
+    <div className="product-caption"><div><p className="product-line">{detail?.line ?? product.productType}</p><h3>{product.title}</h3></div><span>{formatMoney(product.priceRange.min)}</span></div>
+  </Link>;
+}
+
+function ProductGrid({ products, archive = false }: { products: Product[]; archive?: boolean }) {
+  if (!products.length) return <p className="collection-empty">Nothing is currently in this section.</p>;
+  return <div className={`product-grid ${archive ? "tight-grid" : ""}`}>{products.map(product => <ProductCard key={product.id} product={product} archive={archive} />)}</div>;
+}
+
+function SectionHeading({ overline, title, href }: { overline: string; title: string; href: string }) {
+  return <div className="section-heading"><div><p className="eyebrow">{overline}</p><h2>{title}</h2></div><Link href={href} className="inline-link">VIEW ALL <ArrowUpRight size={15} /></Link></div>;
+}
+
+export function HomePage() {
+  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({ first: 12 });
+  const blanks = products.filter(product => matchesCollection(product.productType, product.handle, "blanks"));
+  const archivo = products.filter(product => matchesCollection(product.productType, product.handle, "archivo"));
+  return <>
+    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><p className="hero-wordmark">DOS CAMINOS</p><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
+    <main>
+      <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
+      <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE." href="/collections/blanks" />{isLoading ? <GridSkeleton /> : <ProductGrid products={blanks} />}</section>
+      <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="WORN REFERENCES." href="/collections/archivo" />{isLoading ? <GridSkeleton /> : <ProductGrid products={archivo} archive />}</section>
+      <FitStrip />
+      <section className="email-block"><p className="eyebrow">DROP NOTIFICATIONS</p><h2>THE NEXT ONE,<br />IN YOUR INBOX.</h2><p>New pieces and release time. Nothing else.</p><Newsletter /></section>
+    </main>
+  </>;
+}
+
+function GridSkeleton() { return <div className="product-grid" aria-label="Loading products"><div className="skeleton-card" /><div className="skeleton-card" /><div className="skeleton-card" /></div>; }
+
+function FitStrip() { return <section className="fit-strip"><div className="fit-strip-title"><p className="eyebrow">FIT, IN NUMBERS</p><h2>CROPPED. FITTED.<br />MEASURED OPENLY.</h2><Link href="/pages/fit" className="inline-link">VIEW FIT GUIDE <ArrowUpRight size={15} /></Link></div><div className="mini-measurements"><div className="measure-row measure-head"><span>SIZE</span><span>BODY</span><span>CHEST</span><span>SHOULDER</span></div>{FIT_MEASURES.map(row => <div className="measure-row" key={row.size}><span>{row.size}</span><span>{row.body}</span><span>{row.chest}</span><span>{row.shoulder}</span></div>)}</div></section>; }
+
+export function CollectionPage({ collection }: { collection: "blanks" | "archivo" | "all" }) {
+  const [location] = useLocation();
+  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({ first: 50 });
+  const query = new URLSearchParams(location.split("?")[1] ?? "").get("q")?.toLowerCase().trim() ?? "";
+  const filtered = products.filter(product => matchesCollection(product.productType, product.handle, collection) && (!query || `${product.title} ${product.productType}`.toLowerCase().includes(query)));
+  const heading = collection === "all" ? "ALL PIECES." : collection === "blanks" ? "BLANKS." : "ARCHIVO.";
+  const description = collection === "blanks" ? "Cropped, fitted blanks in washed color." : collection === "archivo" ? "Graphic studies, printed in ink." : "The current release.";
+  return <main className={`inner-page collection-page ${collection === "archivo" ? "collection-archivo" : ""}`}><header className="page-intro"><p className="eyebrow">{collection === "archivo" ? "THE GRAPHIC LINE" : collection === "blanks" ? "THE CORE LINE" : "DOS CAMINOS"}</p><h1>{query ? `RESULTS FOR “${query.toUpperCase()}”` : heading}</h1><p>{description}</p></header>{isLoading ? <GridSkeleton /> : <ProductGrid products={filtered} archive={collection === "archivo"} />}</main>;
+}
+
+function getSelectedVariant(product: Product, size: string | null): ProductVariant | undefined { return product.variants.find(variant => variant.selectedOptions.some(option => option.name.toLowerCase() === "size" && option.value === size)) ?? product.variants[0]; }
+
+export function ProductPage() {
+  const [, params] = useRoute("/products/:handle");
+  const handle = params?.handle ?? "";
+  const { data: product, isLoading, isError } = trpc.commerce.products.byHandle.useQuery({ handle }, { enabled: Boolean(handle) });
+  const { addItem, loading } = useCart();
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [size, setSize] = useState<string | null>(null);
+  useEffect(() => { if (product) setSize(product.options.find(option => option.name.toLowerCase() === "size")?.values[0] ?? null); }, [product]);
+  if (isLoading) return <main className="inner-page product-page loading-page"><p className="eyebrow">LOADING PRODUCT</p></main>;
+  if (isError || !product) return <NotFoundPage />;
+  const detail = getProductDetail(product.handle);
+  const variant = getSelectedVariant(product, size);
+  const gallery = Array.from({ length: 6 }, () => ({ url: getProductImage(product.handle), altText: product.title }));
+  const sizes = product.options.find(option => option.name.toLowerCase() === "size")?.values ?? [];
+  return <main className="product-page"><div className="product-gallery">{gallery.slice(0, 6).map((image, index) => <div className={`gallery-image gallery-${index + 1}`} key={`${image.url}-${index}`}><img src={image.url} alt={index === 0 ? image.altText ?? product.title : ""} /></div>)}</div><section className="product-info"><p className="eyebrow">{detail?.line ?? product.productType}</p><div className="product-title-row"><h1>{product.title}</h1><strong>{formatMoney(variant?.price ?? product.priceRange.min)}</strong></div><p className="product-description">{detail?.note ?? product.description}</p>{sizes.length > 0 && <fieldset className="size-selector"><legend>SIZE</legend><div>{sizes.map(value => <button key={value} type="button" onClick={() => setSize(value)} className={size === value ? "selected" : ""} aria-pressed={size === value}>{value}</button>)}</div></fieldset>}<button className="primary-button add-button" disabled={!variant?.availableForSale || loading} onClick={() => variant && addItem(variant.id)}>{!variant?.availableForSale ? "SOLD OUT" : loading ? "ADDING" : "ADD TO CART"}<ArrowUpRight size={16} /></button><button className="guide-toggle" onClick={() => setSizeGuideOpen(open => !open)} aria-expanded={sizeGuideOpen}>SIZE GUIDE <ChevronDown size={16} className={sizeGuideOpen ? "turn" : ""} /></button>{sizeGuideOpen && <SizeTable compact />}<section className="product-specs"><div><span>FABRIC</span><p>{detail?.fabric ?? "—"}</p></div><div><span>MAKE</span><p>{detail?.location ?? "—"}</p></div><div id="care"><span>CARE</span><p>{detail?.care ?? "—"}</p></div><div><span>MODEL</span><p>{detail?.model ?? "—"}</p></div></section></section></main>;
+}
+
+export function FitPage() { return <main className="inner-page fit-page"><header className="page-intro"><p className="eyebrow">THE CUT</p><h1>FIT GUIDE.</h1><p>Measurements are taken flat. Double chest and hem width for the full circumference.</p></header><div className="fit-layout"><aside><p className="eyebrow">CROP TEE</p><p>Short in body. Easy through the chest. A clean shoulder line.</p><p>Take your usual size for the intended fit. Size up for more room.</p></aside><SizeTable /><div className="measure-notes"><p className="eyebrow">HOW WE MEASURE</p><div><span>01</span><p>Body length is from high point shoulder to hem.</p></div><div><span>02</span><p>Chest is measured 1 in below the armhole, flat.</p></div><div><span>03</span><p>Shoulder is seam to seam, across the back.</p></div></div></div></main>; }
+
+function SizeTable({ compact = false }: { compact?: boolean }) { return <div className={`size-table-wrap ${compact ? "compact-size-table" : ""}`}><table><caption className="sr-only">Crop Tee measurements</caption><thead><tr><th>SIZE</th><th>BODY</th><th>CHEST</th><th>SHOULDER</th>{!compact && <><th>SLEEVE</th><th>HEM</th></>}</tr></thead><tbody>{FIT_MEASURES.map(row => <tr key={row.size}><th>{row.size}</th><td>{row.body}</td><td>{row.chest}</td><td>{row.shoulder}</td>{!compact && <><td>{row.sleeve}</td><td>{row.hem}</td></>}</tr>)}</tbody></table></div>; }
+
+export function AboutPage() { return <main className="inner-page about-page"><header className="page-intro"><p className="eyebrow">DOS CAMINOS</p><h1>MADE FOR<br />THE REPEAT.</h1></header><div className="about-grid"><div className="about-photo"><img src={HERO_IMAGE} alt="A faded blue-gray tee in a quiet sunlit studio" /></div><div className="about-copy"><p>Dos Caminos makes pieces for the parts of a wardrobe that get lived in. The starting point is a cropped, fitted tee in washed cotton: simple enough to reach for without thinking, specific enough to keep.</p><p>Blanks keep the form quiet. Archivo gives it a different surface—small graphic studies with the same worn-in hand. Everything is made to be worn often, washed cold, and kept close.</p><p>No more than needed.</p></div></div></main>; }
+
+export function CartPage() { const { cart, loading, updateQuantity, removeItem, proceedToCheckout } = useCart(); const items = cart?.items ?? []; return <main className="inner-page cart-page"><header className="page-intro"><p className="eyebrow">YOUR SELECTION</p><h1>CART.</h1></header>{items.length === 0 ? <div className="cart-page-empty"><p>Your cart is empty.</p><Link href="/collections/all" className="inline-link">SHOP THE DROP <ArrowUpRight size={15} /></Link></div> : <div className="cart-page-grid"><section>{items.map(item => <CartLine key={item.lineId} item={item} loading={loading} onUpdate={updateQuantity} onRemove={removeItem} />)}</section><aside className="cart-page-summary"><div><span>SUBTOTAL</span><strong>{formatMoney(cart?.subtotal)}</strong></div><button onClick={proceedToCheckout} disabled={loading} className="primary-button">CHECKOUT <ArrowUpRight size={16} /></button><p>Taxes and shipping calculated at checkout.</p></aside></div>}</main>; }
+
+export function NotFoundPage() { return <main className="inner-page not-found"><p className="eyebrow">404</p><h1>NOT FOUND.</h1><Link href="/" className="primary-button">BACK HOME <ArrowRight size={16} /></Link></main>; }
+
+export function StorefrontLayout({ children }: { children: React.ReactNode }) { return <div className="site-shell"><Header />{children}<Footer /><CartDrawer /></div>; }
