@@ -39,7 +39,7 @@ function Header() {
     <header className={`site-header ${home && !scrolled ? "over-hero" : "on-bone"}`}>
       <div className="announcement">NEXT DROP — SEPTEMBER 18, 10:00 AM PT</div>
       <div className="nav-frame">
-        <Link href="/" className="wordmark" aria-label="Dos Caminos home">DOS CAMINOS</Link>
+        <Link href="/" className="wordmark" aria-label="Dos Caminos home" style={{ display: "inline-flex", alignItems: "center", width: "clamp(103px, 10vw, 134px)" }}><img src="/manus-storage/dc-wordmark-primary_199b26eb.svg" alt="Dos Caminos" /></Link>
         <nav className="main-nav" aria-label="Primary navigation">
           <Link href="/collections/blanks">BLANKS</Link>
           <Link href="/collections/archivo">ARCHIVO</Link>

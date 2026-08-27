@@ -13,3 +13,4 @@
 - [x] Build the three-column footer with newsletter capture and prescribed navigation links.
 - [x] Add automated tests covering routing and commerce helpers, then run type checking and tests.
 - [x] Review desktop and mobile renderings, verify no disallowed promotional patterns, and save a final project checkpoint.
+- [x] Replace the header text wordmark with the supplied primary Dos Caminos SVG asset and verify it at desktop and mobile widths.
