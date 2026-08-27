@@ -16,3 +16,10 @@
 - [x] Replace the header text wordmark with the supplied primary Dos Caminos SVG asset and verify it at desktop and mobile widths.
 - [x] Replace the homepage hero text treatment with the supplied primary Dos Caminos SVG wordmark and verify its responsive scale.
 - [x] Upload the supplied Dos Caminos brand-kit icons as managed assets and integrate them strategically across relevant storefront views.
+- [x] Inspect the supplied Archivo manifest and packages, then map their authentic product assets and specifications.
+- [x] Create and publish the three supplied Archivo products with their specified Shopify variants and artwork.
+- [x] Replace Archivo placeholder imagery and static product details with the supplied product-specific catalog content.
+- [x] Add user-confirmed 100% cotton composition and model-sizing details, plus user-authorized provisional production, care, and pricing copy for Archivo 01–03.
+- [x] Apply the confirmed 100% cotton composition and 5'6" / size S model reference to Archivo 01–03, using concise consistent remaining details.
+- [x] Validate the expanded Shopify catalog and responsive Archivo pages before saving the update.
+- [x] Remove the original Archivo No. 01 Tee from the active Shopify assortment and confirm it is absent from the Archivo collection.

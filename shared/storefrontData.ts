@@ -32,6 +32,50 @@ export const PRODUCT_DETAILS = {
     model: "Model is 5'10\" and wears a size M.",
     note: "Washed bone with an inked archival study. Cropped and fitted.",
   },
+  "archivo-01-yamashita-track-field": {
+    line: "ARCHIVO 01",
+    fallbackImage: "/manus-storage/archivo-01-yamashita-track-field-01-onbody-front-standing_4b1a1aa2.jpg",
+    fabric: "100% cotton jersey",
+    location: "Cut and sewn in Los Angeles, CA",
+    care: "Machine wash cold, inside out. Tumble dry low.",
+    model: "Model is 5'6\" and wears a size S.",
+    note: "Yamashita Track Field.",
+  },
+  "archivo-02-arlington-run": {
+    line: "ARCHIVO 02",
+    fallbackImage: "/manus-storage/archivo-02-arlington-run-01-graphic-detail-crop_457120d4.jpg",
+    fabric: "100% cotton jersey",
+    location: "Cut and sewn in Los Angeles, CA",
+    care: "Machine wash cold, inside out. Tumble dry low.",
+    model: "Model is 5'6\" and wears a size S.",
+    note: "Arlington Run.",
+  },
+  "archivo-03-northwestern-mini-marathon": {
+    line: "ARCHIVO 03",
+    fallbackImage: "/manus-storage/archivo-03-northwestern-mini-marathon-01-graphic-detail-crop_c9fda934.jpg",
+    fabric: "100% cotton jersey",
+    location: "Cut and sewn in Los Angeles, CA",
+    care: "Machine wash cold, inside out. Tumble dry low.",
+    model: "Model is 5'6\" and wears a size S.",
+    note: "Northwestern Mini Marathon.",
+  },
+} as const;
+
+export const PRODUCT_GALLERIES = {
+  "archivo-01-yamashita-track-field": [
+    "/manus-storage/archivo-01-yamashita-track-field-01-onbody-front-standing_4b1a1aa2.jpg",
+    "/manus-storage/archivo-01-yamashita-track-field-02-onbody-seated-detail_87c1e88f.jpg",
+  ],
+  "archivo-02-arlington-run": [
+    "/manus-storage/archivo-02-arlington-run-01-graphic-detail-crop_457120d4.jpg",
+    "/manus-storage/archivo-02-arlington-run-02-onbody-front-full_ff932b2f.jpg",
+    "/manus-storage/archivo-02-arlington-run-03-onbody-walking_e4c5c520.jpg",
+  ],
+  "archivo-03-northwestern-mini-marathon": [
+    "/manus-storage/archivo-03-northwestern-mini-marathon-01-graphic-detail-crop_c9fda934.jpg",
+    "/manus-storage/archivo-03-northwestern-mini-marathon-02-onbody-front-full_26693425.jpg",
+    "/manus-storage/archivo-03-northwestern-mini-marathon-03-onbody-arms-crossed_a58b09f4.jpg",
+  ],
 } as const;
 
 export const DEFAULT_PRODUCT_IMAGE = "/manus-storage/dos-caminos-faded-blank-front_f8a47045.jpg";
@@ -41,7 +85,11 @@ export function getProductDetail(handle: string) {
 }
 
 export function getProductImage(handle: string) {
-  return getProductDetail(handle)?.fallbackImage ?? DEFAULT_PRODUCT_IMAGE;
+  return getProductGallery(handle)[0] ?? getProductDetail(handle)?.fallbackImage ?? DEFAULT_PRODUCT_IMAGE;
+}
+
+export function getProductGallery(handle: string) {
+  return PRODUCT_GALLERIES[handle as keyof typeof PRODUCT_GALLERIES] ?? [];
 }
 
 export function matchesCollection(productType: string | null | undefined, handle: string | null | undefined, collection: "blanks" | "archivo" | "all") {

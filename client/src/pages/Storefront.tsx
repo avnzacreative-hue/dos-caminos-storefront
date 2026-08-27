@@ -1,7 +1,7 @@
 import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import type { CartItem, Money, Product, ProductVariant } from "@shared/commerce/types";
-import { FIT_MEASURES, getProductDetail, getProductImage, matchesCollection } from "@shared/storefrontData";
+import { FIT_MEASURES, getProductDetail, getProductGallery, getProductImage, matchesCollection } from "@shared/storefrontData";
 import { ArrowRight, ArrowUpRight, ChevronDown, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useRoute } from "wouter";
@@ -193,7 +193,8 @@ export function ProductPage() {
   if (isError || !product) return <NotFoundPage />;
   const detail = getProductDetail(product.handle);
   const variant = getSelectedVariant(product, size);
-  const gallery = Array.from({ length: 6 }, () => ({ url: getProductImage(product.handle), altText: product.title }));
+  const suppliedGallery = getProductGallery(product.handle);
+  const gallery = (suppliedGallery.length ? suppliedGallery : [getProductImage(product.handle)]).map(url => ({ url, altText: product.title }));
   const sizes = product.options.find(option => option.name.toLowerCase() === "size")?.values ?? [];
   return <main className="product-page"><div className="product-gallery">{gallery.slice(0, 6).map((image, index) => <div className={`gallery-image gallery-${index + 1}`} key={`${image.url}-${index}`}><img src={image.url} alt={index === 0 ? image.altText ?? product.title : ""} /></div>)}</div><section className="product-info"><p className="eyebrow">{detail?.line ?? product.productType}</p><div className="product-title-row"><h1>{product.title}</h1><strong>{formatMoney(variant?.price ?? product.priceRange.min)}</strong></div><p className="product-description">{detail?.note ?? product.description}</p>{sizes.length > 0 && <fieldset className="size-selector"><legend>SIZE</legend><div>{sizes.map(value => <button key={value} type="button" onClick={() => setSize(value)} className={size === value ? "selected" : ""} aria-pressed={size === value}>{value}</button>)}</div></fieldset>}<button className="primary-button add-button" disabled={!variant?.availableForSale || loading} onClick={() => variant && addItem(variant.id)}>{!variant?.availableForSale ? "SOLD OUT" : loading ? "ADDING" : "ADD TO CART"}<ArrowUpRight size={16} /></button><button className="guide-toggle" onClick={() => setSizeGuideOpen(open => !open)} aria-expanded={sizeGuideOpen}>SIZE GUIDE <ChevronDown size={16} className={sizeGuideOpen ? "turn" : ""} /></button>{sizeGuideOpen && <SizeTable compact />}<section className="product-specs"><div><span>FABRIC</span><p>{detail?.fabric ?? "—"}</p></div><div><span>MAKE</span><p>{detail?.location ?? "—"}</p></div><div id="care"><span>CARE</span><p>{detail?.care ?? "—"}</p></div><div><span>MODEL</span><p>{detail?.model ?? "—"}</p></div></section></section></main>;
 }
