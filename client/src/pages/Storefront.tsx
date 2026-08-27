@@ -13,6 +13,20 @@ function formatMoney(money?: Money | null) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: money.currencyCode, maximumFractionDigits: 0 }).format(Number(money.amount));
 }
 
+const BRAND_ICONS = {
+  dosCaminos: "/manus-storage/01-dos-caminos_00a5cec5.svg",
+  tresCerros: "/manus-storage/02-tres-cerros_f57525c1.svg",
+  laPlaya: "/manus-storage/03-la-playa_698770e7.svg",
+  lerma: "/manus-storage/04-lerma_0ab57783.svg",
+  sello: "/manus-storage/05-sello_1e76fce4.svg",
+  agave: "/manus-storage/06-agave_3131d6cb.svg",
+  lavado: "/manus-storage/09-lavado_92d9a8de.svg",
+} as const;
+
+function BrandIcon({ icon, label, size = 22, muted = false }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean }) {
+  return <img src={BRAND_ICONS[icon]} alt={label} style={{ width: size, height: size, objectFit: "contain", opacity: muted ? 0.58 : 1, flex: "0 0 auto" }} />;
+}
+
 function Header() {
   const [location, setLocation] = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -92,7 +106,7 @@ function Footer() {
       <div><p className="footer-label">INFO</p><Link href="/pages/fit">Fit Guide</Link><a href="#care">Care</a><a href="#shipping">Shipping &amp; Returns</a></div>
       <div><p className="footer-label">COMPANY</p><Link href="/pages/about">About</Link><a href="mailto:hello@doscaminos.example">Contact</a><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></div>
     </div>
-    <div className="footer-bottom"><span>© 2026 DOS CAMINOS</span><span>MADE FOR EVERYDAY</span></div>
+    <div className="footer-bottom"><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="dosCaminos" label="Dos Caminos mark" size={15} muted />© 2026 DOS CAMINOS</span><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="lavado" label="Care mark" size={15} muted />MADE FOR EVERYDAY</span></div>
   </footer>;
 }
 
@@ -130,7 +144,9 @@ function ProductGrid({ products, archive = false }: { products: Product[]; archi
 }
 
 function SectionHeading({ overline, title, href }: { overline: string; title: string; href: string }) {
-  return <div className="section-heading"><div><p className="eyebrow">{overline}</p><h2>{title}</h2></div><Link href={href} className="inline-link">VIEW ALL <ArrowUpRight size={15} /></Link></div>;
+  const icon = overline.includes("ARCHIVO") ? "sello" : "agave";
+  const label = icon === "sello" ? "Archivo seal" : "Natural fiber mark";
+  return <div className="section-heading"><div><div style={{ display: "flex", alignItems: "center", gap: 8 }}><BrandIcon icon={icon} label={label} size={20} muted={overline.includes("ARCHIVO")} /><p className="eyebrow">{overline}</p></div><h2>{title}</h2></div><Link href={href} className="inline-link">VIEW ALL <ArrowUpRight size={15} /></Link></div>;
 }
 
 export function HomePage() {
@@ -140,7 +156,7 @@ export function HomePage() {
   return <>
     <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><img src="/manus-storage/dc-wordmark-primary_199b26eb.svg" alt="Dos Caminos" style={{ display: "block", width: "clamp(270px, 53vw, 740px)", maxWidth: "100%", height: "auto" }} /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
     <main>
-      <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
+      <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div style={{ display: "flex", alignItems: "center", gap: 13, paddingBottom: 6 }}><BrandIcon icon="tresCerros" label="Tres Cerros mark" size={24} muted /><BrandIcon icon="laPlaya" label="La Playa mark" size={24} muted /><BrandIcon icon="lerma" label="Lerma mark" size={24} muted /></div><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
       <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE." href="/collections/blanks" />{isLoading ? <GridSkeleton /> : <ProductGrid products={blanks} />}</section>
       <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="WORN REFERENCES." href="/collections/archivo" />{isLoading ? <GridSkeleton /> : <ProductGrid products={archivo} archive />}</section>
       <FitStrip />

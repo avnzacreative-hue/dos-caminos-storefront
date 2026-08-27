@@ -15,3 +15,4 @@
 - [x] Review desktop and mobile renderings, verify no disallowed promotional patterns, and save a final project checkpoint.
 - [x] Replace the header text wordmark with the supplied primary Dos Caminos SVG asset and verify it at desktop and mobile widths.
 - [x] Replace the homepage hero text treatment with the supplied primary Dos Caminos SVG wordmark and verify its responsive scale.
+- [x] Upload the supplied Dos Caminos brand-kit icons as managed assets and integrate them strategically across relevant storefront views.
