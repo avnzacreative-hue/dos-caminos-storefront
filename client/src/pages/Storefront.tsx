@@ -138,7 +138,7 @@ export function HomePage() {
   const blanks = products.filter(product => matchesCollection(product.productType, product.handle, "blanks"));
   const archivo = products.filter(product => matchesCollection(product.productType, product.handle, "archivo"));
   return <>
-    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><p className="hero-wordmark">DOS CAMINOS</p><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
+    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><img src="/manus-storage/dc-wordmark-primary_199b26eb.svg" alt="Dos Caminos" style={{ display: "block", width: "clamp(270px, 53vw, 740px)", maxWidth: "100%", height: "auto" }} /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
     <main>
       <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
       <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE." href="/collections/blanks" />{isLoading ? <GridSkeleton /> : <ProductGrid products={blanks} />}</section>
