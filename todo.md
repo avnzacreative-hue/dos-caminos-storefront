@@ -23,3 +23,4 @@
 - [x] Apply the confirmed 100% cotton composition and 5'6" / size S model reference to Archivo 01–03, using concise consistent remaining details.
 - [x] Validate the expanded Shopify catalog and responsive Archivo pages before saving the update.
 - [x] Remove the original Archivo No. 01 Tee from the active Shopify assortment and confirm it is absent from the Archivo collection.
+- [x] Reduce the mobile header footprint, improve tap-target spacing, and rebalance the homepage hero crop and wordmark placement above the fold.

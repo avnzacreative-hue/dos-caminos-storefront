@@ -1,0 +1,79 @@
+@media (max-width: 580px) {
+  .announcement {
+    height: 27px;
+    padding: 0 12px;
+    font-size: 8px;
+    letter-spacing: 0.075em;
+  }
+
+  .site-header.over-hero {
+    background: linear-gradient(180deg, rgba(239, 234, 225, 0.94) 0%, rgba(239, 234, 225, 0.79) 72%, rgba(239, 234, 225, 0) 100%);
+  }
+
+  .nav-frame {
+    height: 51px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 6px;
+    padding: 0 16px;
+  }
+
+  .wordmark {
+    width: 128px !important;
+    min-height: 44px;
+  }
+
+  .nav-actions {
+    gap: 4px;
+  }
+
+  .icon-button,
+  .cart-trigger {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 7px;
+  }
+
+  .cart-trigger {
+    gap: 3px;
+  }
+
+  .main-nav {
+    height: 31px;
+    gap: 25px;
+    padding: 0 3px 2px;
+  }
+
+  .main-nav a {
+    min-height: 30px;
+    padding: 7px 0;
+    font-size: 9px;
+    letter-spacing: 0.075em;
+  }
+
+  .site-header {
+    min-height: 109px;
+  }
+
+  .hero {
+    height: min(78svh, 640px);
+    min-height: 520px;
+    background-color: var(--bone);
+    background-position: 100% 30%;
+    background-repeat: no-repeat;
+    background-size: auto 76%;
+    padding: 0 20px 53px;
+  }
+
+  .hero-copy {
+    gap: 20px;
+  }
+
+  .hero-copy > img {
+    width: min(86vw, 356px) !important;
+  }
+
+  .hero-cta {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+}

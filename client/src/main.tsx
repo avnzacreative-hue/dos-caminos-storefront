@@ -8,6 +8,7 @@ import App from "./App";
 import { startLogin } from "./const";
 import { CartProvider } from "./contexts/CartContext";
 import "./index.css";
+import "./mobile-optimizations.css";
 
 const queryClient = new QueryClient();
 
