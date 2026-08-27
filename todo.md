@@ -25,3 +25,6 @@
 - [x] Remove the original Archivo No. 01 Tee from the active Shopify assortment and confirm it is absent from the Archivo collection.
 - [x] Reduce the mobile header footprint, improve tap-target spacing, and rebalance the homepage hero crop and wordmark placement above the fold.
 - [x] Reset viewport scroll to the top on every internal storefront route transition, including listings, product pages, and informational pages.
+- [x] Replace the fading hero-header behavior with a stable header treatment using the Dos Caminos wordmark in place of text-button branding.
+- [x] Add a footer brand-mark display that cycles supplied icon colors through orange, blue, and green while preserving accessible contrast.
+- [x] Review the referenced Circa interaction architecture and validate the adapted Dos Caminos header and footer at desktop and mobile widths.

@@ -23,24 +23,32 @@ const BRAND_ICONS = {
   lavado: "/manus-storage/09-lavado_92d9a8de.svg",
 } as const;
 
-function BrandIcon({ icon, label, size = 22, muted = false }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean }) {
-  return <img src={BRAND_ICONS[icon]} alt={label} style={{ width: size, height: size, objectFit: "contain", opacity: muted ? 0.58 : 1, flex: "0 0 auto" }} />;
+const BRAND_ICON_TONES = {
+  ink: "none",
+  orange: "invert(60%) sepia(78%) saturate(563%) hue-rotate(348deg) brightness(96%) contrast(90%)",
+  blue: "invert(37%) sepia(14%) saturate(1857%) hue-rotate(180deg) brightness(91%) contrast(87%)",
+  green: "invert(46%) sepia(48%) saturate(475%) hue-rotate(84deg) brightness(91%) contrast(89%)",
+} as const;
+
+export const FOOTER_BRAND_MARKS = [
+  { icon: "dosCaminos", label: "Dos Caminos mark", tone: "orange" },
+  { icon: "tresCerros", label: "Tres Cerros mark", tone: "blue" },
+  { icon: "laPlaya", label: "La Playa mark", tone: "green" },
+  { icon: "lerma", label: "Lerma mark", tone: "orange" },
+  { icon: "sello", label: "Sello mark", tone: "blue" },
+  { icon: "agave", label: "Agave mark", tone: "green" },
+  { icon: "lavado", label: "Lavado mark", tone: "orange" },
+] as const;
+
+function BrandIcon({ icon, label, size = 22, muted = false, tone = "ink" }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean; tone?: keyof typeof BRAND_ICON_TONES }) {
+  return <img src={BRAND_ICONS[icon]} alt={label} style={{ width: size, height: size, objectFit: "contain", opacity: muted ? 0.58 : 1, flex: "0 0 auto", filter: BRAND_ICON_TONES[tone] }} />;
 }
 
 function Header() {
-  const [location, setLocation] = useLocation();
-  const [scrolled, setScrolled] = useState(false);
+  const [, setLocation] = useLocation();
   const [searching, setSearching] = useState(false);
   const [term, setTerm] = useState("");
   const { itemCount, openCart } = useCart();
-  const home = location === "/";
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   function onSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,7 +58,7 @@ function Header() {
   }
 
   return (
-    <header className={`site-header ${home && !scrolled ? "over-hero" : "on-bone"}`}>
+    <header className="site-header on-bone stable-header">
       <div className="announcement">NEXT DROP — SEPTEMBER 18, 10:00 AM PT</div>
       <div className="nav-frame">
         <Link href="/" className="wordmark" aria-label="Dos Caminos home" style={{ display: "inline-flex", alignItems: "center", width: "clamp(103px, 10vw, 134px)" }}><img src="/manus-storage/dc-wordmark-primary_199b26eb.svg" alt="Dos Caminos" /></Link>
@@ -98,6 +106,10 @@ function Newsletter({ compact = false }: { compact?: boolean }) {
   );
 }
 
+function FooterMarkRail() {
+  return <div className="footer-mark-rail" aria-label="Dos Caminos brand marks">{FOOTER_BRAND_MARKS.map(mark => <BrandIcon key={mark.icon} icon={mark.icon} label={mark.label} size={37} tone={mark.tone} />)}</div>;
+}
+
 function Footer() {
   return <footer className="site-footer">
     <div className="footer-news"><p className="eyebrow">DROP NOTES</p><h2>IN THE KNOW, ONLY WHEN IT MATTERS.</h2><Newsletter compact /></div>
@@ -106,6 +118,7 @@ function Footer() {
       <div><p className="footer-label">INFO</p><Link href="/pages/fit">Fit Guide</Link><a href="#care">Care</a><a href="#shipping">Shipping &amp; Returns</a></div>
       <div><p className="footer-label">COMPANY</p><Link href="/pages/about">About</Link><a href="mailto:hello@doscaminos.example">Contact</a><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></div>
     </div>
+    <FooterMarkRail />
     <div className="footer-bottom"><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="dosCaminos" label="Dos Caminos mark" size={15} muted />© 2026 DOS CAMINOS</span><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="lavado" label="Care mark" size={15} muted />MADE FOR EVERYDAY</span></div>
   </footer>;
 }

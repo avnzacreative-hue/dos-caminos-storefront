@@ -1,0 +1,32 @@
+.site-header.stable-header {
+  transition: none;
+}
+
+.footer-mark-rail {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: center;
+  gap: 12px;
+  margin: 60px 0 30px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(239, 234, 225, 0.22);
+  border-bottom: 1px solid rgba(239, 234, 225, 0.22);
+}
+
+.footer-mark-rail img {
+  width: min(100%, 37px) !important;
+  height: 37px !important;
+  margin: 0 auto;
+}
+
+@media (max-width: 580px) {
+  .footer-mark-rail {
+    gap: 8px;
+    margin: 44px 0 24px;
+    padding: 18px 0;
+  }
+
+  .footer-mark-rail img {
+    height: 26px !important;
+  }
+}

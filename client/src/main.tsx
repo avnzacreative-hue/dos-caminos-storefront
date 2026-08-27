@@ -9,6 +9,7 @@ import { startLogin } from "./const";
 import { CartProvider } from "./contexts/CartContext";
 import "./index.css";
 import "./mobile-optimizations.css";
+import "./brand-treatments.css";
 
 const queryClient = new QueryClient();
 
