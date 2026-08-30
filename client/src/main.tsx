@@ -12,6 +12,8 @@ import "./mobile-optimizations.css";
 import "./brand-treatments.css";
 import "./new-wordmark.css";
 import "./catalog-error-state.css";
+import "./pdp-revision.css";
+import "./campaign-hero.css";
 
 const queryClient = new QueryClient();
 

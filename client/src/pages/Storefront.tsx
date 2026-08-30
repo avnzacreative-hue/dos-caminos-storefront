@@ -2,11 +2,14 @@ import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import type { CartItem, Money, Product, ProductVariant } from "@shared/commerce/types";
 import { FIT_MEASURES, getProductDetail, getProductGallery, getProductImage, matchesCollection } from "@shared/storefrontData";
+import { clampPdpQuantity, getActivePdpAnchorId, getPdpSpecFields, PDP_ANCHORS, PDP_SIZE_HEADERS } from "@shared/pdp";
 import { ArrowRight, ArrowUpRight, ChevronDown, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useRoute } from "wouter";
 
 const HERO_IMAGE = "/manus-storage/dos-caminos-hero_ff1bf96d.jpg";
+const CAMPAIGN_HERO_IMAGE = "/manus-storage/dos-caminos-campaign-hero-v2_ae26db36.webp";
+const MOBILE_CAMPAIGN_HERO_IMAGE = "/manus-storage/dos-caminos-campaign-hero-mobile_c7af5582.webp";
 export const PRIMARY_WORDMARK_URL = "/manus-storage/dos-caminos-primary-lockup_1923c629.png";
 
 function formatMoney(money?: Money | null) {
@@ -174,7 +177,7 @@ export function HomePage() {
   const blanks = products.filter(product => matchesCollection(product.productType, product.handle, "blanks"));
   const archivo = products.filter(product => matchesCollection(product.productType, product.handle, "archivo"));
   return <>
-    <section className="hero type-hero"><div className="hero-copy"><img className="hero-primary-wordmark" src={PRIMARY_WORDMARK_URL} alt="Dos Caminos" /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
+    <section className="hero campaign-hero"><picture><source media="(max-width: 699px)" srcSet={MOBILE_CAMPAIGN_HERO_IMAGE} /><img className="campaign-hero-media" src={CAMPAIGN_HERO_IMAGE} alt="Dos Caminos campaign at a shuttered storefront" /></picture><div className="hero-copy"><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
     <main>
       <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div style={{ display: "flex", alignItems: "center", gap: 13, paddingBottom: 6 }}><BrandIcon icon="tresCerros" label="Tres Cerros mark" size={24} muted /><BrandIcon icon="laPlaya" label="La Playa mark" size={24} muted /><BrandIcon icon="lerma" label="Lerma mark" size={24} muted /></div><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
       <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE" href="/collections/blanks" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={blanks} />}</section>
@@ -201,13 +204,49 @@ export function CollectionPage({ collection }: { collection: "blanks" | "archivo
 
 function getSelectedVariant(product: Product, size: string | null): ProductVariant | undefined { return product.variants.find(variant => variant.selectedOptions.some(option => option.name.toLowerCase() === "size" && option.value === size)) ?? product.variants[0]; }
 
+function PdpSectionAnchors() {
+  const [active, setActive] = useState<(typeof PDP_ANCHORS)[number]["id"]>("description");
+  useEffect(() => {
+    const sections = PDP_ANCHORS.map(anchor => document.getElementById(anchor.id)).filter((section): section is HTMLElement => Boolean(section));
+    const observer = new IntersectionObserver(entries => {
+      const activeId = getActivePdpAnchorId(entries.map(entry => ({ id: entry.target.id, isIntersecting: entry.isIntersecting, top: entry.boundingClientRect.top })));
+      if (activeId) setActive(activeId);
+    }, { rootMargin: "-22% 0px -62% 0px", threshold: .05 });
+    sections.forEach(section => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+  return <nav className="pdp-section-anchors" aria-label="Product page sections">{PDP_ANCHORS.map(anchor => <a key={anchor.id} href={`#${anchor.id}`} onClick={() => setActive(anchor.id)} className={active === anchor.id ? "active" : ""}>{anchor.label}</a>)}</nav>;
+}
+
+function PdpShareButton({ title }: { title: string }) {
+  const [copied, setCopied] = useState(false);
+  async function share() {
+    const shareData = { title, url: window.location.href };
+    if (navigator.share) {
+      try { await navigator.share(shareData); return; } catch { /* share sheet dismissal needs no fallback */ }
+    }
+    await navigator.clipboard?.writeText(window.location.href);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  }
+  return <button type="button" className="pdp-share" onClick={share}>{copied ? "COPIED" : "SHARE"}</button>;
+}
+
+function PdpActionBar({ title, price, variant, quantity, onQuantityChange, loading, onAdd }: { title: string; price?: Money | null; variant?: ProductVariant; quantity: number; onQuantityChange: (quantity: number) => void; loading: boolean; onAdd: () => void }) {
+  return <aside className="pdp-action-bar" aria-label="Add product to cart"><PdpShareButton title={title} /><div className="pdp-quantity-stepper" aria-label="Quantity"><button type="button" disabled={quantity <= 1} onClick={() => onQuantityChange(clampPdpQuantity(quantity - 1))} aria-label="Decrease quantity"><Minus size={14} /></button><span aria-live="polite">{quantity}</span><button type="button" disabled={quantity >= 99} onClick={() => onQuantityChange(clampPdpQuantity(quantity + 1))} aria-label="Increase quantity"><Plus size={14} /></button></div><button type="button" className="primary-button pdp-add-button" disabled={!variant?.availableForSale || loading} onClick={onAdd}>{!variant?.availableForSale ? "SOLD OUT" : loading ? "ADDING" : "ADD TO CART"}</button><strong className="pdp-action-price">{formatMoney(price)}</strong></aside>;
+}
+
+function PdpSizeTable() {
+  return <div className="size-table-wrap"><table><caption className="sr-only">Crop Tee measurements</caption><thead><tr>{PDP_SIZE_HEADERS.map(header => <th key={header}>{header}</th>)}</tr></thead><tbody>{FIT_MEASURES.map(row => <tr key={row.size}><th>{row.size}</th><td>{row.body}</td><td>{row.chest}</td><td>{row.shoulder}</td><td>{row.sleeve}</td><td>{row.hem}</td></tr>)}</tbody></table></div>;
+}
+
 export function ProductPage() {
   const [, params] = useRoute("/products/:handle");
   const handle = params?.handle ?? "";
   const { data: product, isLoading, isError } = trpc.commerce.products.byHandle.useQuery({ handle }, { enabled: Boolean(handle) });
   const { addItem, loading } = useCart();
-  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [size, setSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
   useEffect(() => { if (product) setSize(product.options.find(option => option.name.toLowerCase() === "size")?.values[0] ?? null); }, [product]);
   if (isLoading) return <main className="inner-page product-page loading-page"><p className="eyebrow">LOADING PRODUCT</p></main>;
   if (isError || !product) return <NotFoundPage />;
@@ -216,7 +255,9 @@ export function ProductPage() {
   const suppliedGallery = getProductGallery(product.handle);
   const gallery = (suppliedGallery.length ? suppliedGallery : [getProductImage(product.handle)]).map(url => ({ url, altText: product.title }));
   const sizes = product.options.find(option => option.name.toLowerCase() === "size")?.values ?? [];
-  return <main className="product-page"><div className="product-gallery">{gallery.slice(0, 6).map((image, index) => <div className={`gallery-image gallery-${index + 1}`} key={`${image.url}-${index}`}><img src={image.url} alt={index === 0 ? image.altText ?? product.title : ""} /></div>)}</div><section className="product-info"><p className="eyebrow">{detail?.line ?? product.productType}</p><div className="product-title-row"><h1>{product.title}</h1><strong>{formatMoney(variant?.price ?? product.priceRange.min)}</strong></div><p className="product-description">{detail?.note ?? product.description}</p>{sizes.length > 0 && <fieldset className="size-selector"><legend>SIZE</legend><div>{sizes.map(value => <button key={value} type="button" onClick={() => setSize(value)} className={size === value ? "selected" : ""} aria-pressed={size === value}>{value}</button>)}</div></fieldset>}<button className="primary-button add-button" disabled={!variant?.availableForSale || loading} onClick={() => variant && addItem(variant.id)}>{!variant?.availableForSale ? "SOLD OUT" : loading ? "ADDING" : "ADD TO CART"}<ArrowUpRight size={16} /></button><button className="guide-toggle" onClick={() => setSizeGuideOpen(open => !open)} aria-expanded={sizeGuideOpen}>SIZE GUIDE <ChevronDown size={16} className={sizeGuideOpen ? "turn" : ""} /></button>{sizeGuideOpen && <SizeTable compact />}<section className="product-specs"><div><span>FABRIC</span><p>{detail?.fabric ?? "—"}</p></div><div><span>MAKE</span><p>{detail?.location ?? "—"}</p></div><div id="care"><span>CARE</span><p>{detail?.care ?? "—"}</p></div><div><span>MODEL</span><p>{detail?.model ?? "—"}</p></div></section></section></main>;
+  const specFields = getPdpSpecFields(detail?.location, detail?.fabric);
+  const price = variant?.price ?? product.priceRange.min;
+  return <main className="product-page pdp-page"><div className="pdp-gallery-shell"><PdpSectionAnchors /><div className="product-gallery">{gallery.slice(0, 6).map((image, index) => <div className={`gallery-image gallery-${index + 1}`} key={`${image.url}-${index}`}><img src={image.url} alt={index === 0 ? image.altText ?? product.title : ""} /></div>)}</div></div><section className="product-info pdp-info"><p className="eyebrow">{detail?.line ?? product.productType}</p><h1 className="pdp-title">{product.title}</h1><div className="pdp-spec-fields">{specFields.map(field => <div key={field.label}><span>{field.label}</span><p>{field.value}</p></div>)}</div><section id="description" className="pdp-content-section"><p className="pdp-section-label">DESCRIPTION</p><p className="pdp-description">{detail?.note ?? product.description}</p>{sizes.length > 0 && <fieldset className="pdp-size-selector"><legend>SELECT SIZE</legend><div>{sizes.map(value => <button key={value} type="button" onClick={() => setSize(value)} className={size === value ? "selected" : ""} aria-pressed={size === value}>{value}</button>)}</div></fieldset>}</section><section id="product-details" className="pdp-content-section"><p className="pdp-section-label">PRODUCT DETAILS</p><div className="pdp-product-specs"><div><span>FABRIC</span><p>{detail?.fabric ?? "100% Cotton"}</p></div><div><span>MAKE</span><p>{detail?.location ?? "Los Angeles, CA"}</p></div><div><span>CARE</span><p>{detail?.care ?? "Cold wash, inside out. Hang dry."}</p></div><div><span>MODEL</span><p>{detail?.model ?? "Model is 5'6\" and wears a size S."}</p></div></div></section><section id="size-chart" className="pdp-content-section pdp-size-chart"><p className="pdp-section-label">SIZE CHART</p><PdpSizeTable /><p className="pdp-chart-note">Garment measured flat, in inches.</p><p className="pdp-chart-note">Each garment is washed individually. Expect natural variation in color and finish between pieces.</p></section></section><PdpActionBar title={product.title} price={price} variant={variant} quantity={quantity} onQuantityChange={setQuantity} loading={loading} onAdd={() => variant && addItem(variant.id, quantity)} /></main>;
 }
 
 export function FitPage() { return <main className="inner-page fit-page"><header className="page-intro"><p className="eyebrow">THE CUT</p><h1>FIT GUIDE</h1><p>Measurements are taken flat. Double chest and hem width for the full circumference.</p></header><div className="fit-layout"><aside><p className="eyebrow">CROP TEE</p><p>Short in body. Easy through the chest. A clean shoulder line.</p><p>Take your usual size for the intended fit. Size up for more room.</p></aside><SizeTable /><div className="measure-notes"><p className="eyebrow">HOW WE MEASURE</p><div><span>01</span><p>Body length is from high point shoulder to hem.</p></div><div><span>02</span><p>Chest is measured 1 in below the armhole, flat.</p></div><div><span>03</span><p>Shoulder is seam to seam, across the back.</p></div></div></div></main>; }

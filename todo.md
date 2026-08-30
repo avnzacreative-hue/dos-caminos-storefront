@@ -41,3 +41,20 @@
 - [x] Validate all stated revision criteria, including color usage, contrast, typography, copy, and absence of legacy indigo hex values.
 - [x] Apply the specified Archivo dark-ground image border and radius treatment to the dedicated Archivo collection route as well as the homepage section.
 - [x] Add explicit revision-compliance validation for small-text accent and muted token usage, approved button fills, and legacy palette removal across the editable source.
+- [x] Replace the PDP inline add-to-cart controls with the supplied responsive fixed bottom action bar, including share, quantity, add-to-cart, and price.
+- [x] Add desktop-only sticky floating PDP section anchors for description, product details, and the inline size chart.
+- [x] Convert the PDP gallery to the required edge-to-edge vertical two-column desktop and one-column mobile layout, retaining the supplied product photography.
+- [x] Apply the PDP-specific two-size typographic system and add the specified MADE, MATERIAL, SHIPS, and FIT information block beneath the title.
+- [x] Update the inline PDP size chart with precise measurement-method headers and the requested garment-measurement notes.
+- [x] Validate the fixed bar, anchor behavior, gallery edges, typography constraints, and PDP bottom clearance across desktop and mobile.
+- [x] Correct the desktop PDP section-anchor layer so it overlays the image gallery instead of creating blank space above it.
+- [ ] Add the remaining authentic front, back, neck-label, hem-detail, and on-body PDP product shots required to complete the specified six-image gallery sequence.
+- [x] Add automated coverage for PDP anchor navigation, active-state changes, and smooth scrolling behavior.
+- [x] Verify and record desktop and mobile full-page PDP clearance so the fixed action bar does not obscure the last gallery image or footer.
+- [x] Prevent a blank desktop gallery cell for products with an odd number of authentic source images while retaining the full-bleed gallery treatment.
+- [x] Add explicit automated coverage for PDP smooth-scroll behavior on anchor navigation.
+- [x] Capture and record a mobile full-page PDP review confirming the fixed action bar leaves the final gallery image and footer unobscured.
+- [x] Replace the homepage type-only hero with the supplied Dos Caminos campaign image and optimize the responsive crop, wordmark, and call-to-action for readable contrast.
+- [x] Replace the current homepage campaign image with the newly supplied composition and remove the hero wordmark overlay while keeping the site navigation intact.
+- [x] Preserve the full campaign composition across common desktop, tablet, and mobile browser widths without subject or artwork clipping.
+- [x] Use the newly supplied portrait campaign image for the mobile homepage hero while retaining the landscape campaign composition on tablet and desktop.
