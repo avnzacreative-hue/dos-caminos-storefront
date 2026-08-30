@@ -2,6 +2,7 @@
   display: block;
   width: 100%;
   height: auto;
+  filter: brightness(.55) sepia(.78) saturate(1.5) hue-rotate(336deg);
 }
 
 .hero-primary-wordmark {
@@ -9,6 +10,7 @@
   width: clamp(280px, 41vw, 528px);
   max-width: 100%;
   height: auto;
+  filter: brightness(.55) sepia(.78) saturate(1.5) hue-rotate(336deg);
 }
 
 @media (max-width: 580px) {

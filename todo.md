@@ -33,3 +33,11 @@
 - [x] Replace the current Dos Caminos wordmark with the newly supplied primary lockup in the header and homepage hero, optimized for responsive display.
 - [x] Verify the user-adjusted hero wordmark scale and restore responsive hero layout behavior if the visual editor introduced fixed-width overrides.
 - [x] Remove the accidental 528px fixed widths from the hero, hero copy, call-to-action, and icon while retaining the intended smaller wordmark scale.
+- [x] Replace the legacy indigo palette with the supplied bone, cacao, vermillion, ember, coral, clay, and ash tokens while enforcing the stated contrast rules.
+- [x] Remove all negative letter-spacing, apply the specified display, wordmark, nav, and body typography rules, and reduce display-heading weight to 400.
+- [x] Apply the supplied copy revisions, including the Archivo heading, trailing-period removals, and footer provenance line.
+- [x] Replace the photographed hero with a generous type-only bone hero using the supplied primary wordmark and a cacao SHOP BLANKS CTA.
+- [x] Add the specified subtle Archivo product-image border treatment on the cacao ground without changing the product grid layout.
+- [x] Validate all stated revision criteria, including color usage, contrast, typography, copy, and absence of legacy indigo hex values.
+- [x] Apply the specified Archivo dark-ground image border and radius treatment to the dedicated Archivo collection route as well as the homepage section.
+- [x] Add explicit revision-compliance validation for small-text accent and muted token usage, approved button fills, and legacy palette removal across the editable source.

@@ -25,23 +25,23 @@ const BRAND_ICONS = {
 } as const;
 
 const BRAND_ICON_TONES = {
-  ink: "none",
-  orange: "invert(60%) sepia(78%) saturate(563%) hue-rotate(348deg) brightness(96%) contrast(90%)",
-  blue: "invert(37%) sepia(14%) saturate(1857%) hue-rotate(180deg) brightness(91%) contrast(87%)",
-  green: "invert(46%) sepia(48%) saturate(475%) hue-rotate(84deg) brightness(91%) contrast(89%)",
+  cacao: "brightness(.55) sepia(.78) saturate(1.5) hue-rotate(336deg)",
+  vermillion: "invert(41%) sepia(97%) saturate(1353%) hue-rotate(347deg) brightness(102%) contrast(90%)",
+  ember: "invert(25%) sepia(83%) saturate(2191%) hue-rotate(358deg) brightness(87%) contrast(93%)",
+  coral: "invert(61%) sepia(66%) saturate(577%) hue-rotate(331deg) brightness(103%) contrast(102%)",
 } as const;
 
 export const FOOTER_BRAND_MARKS = [
-  { icon: "dosCaminos", label: "Dos Caminos mark", tone: "orange" },
-  { icon: "tresCerros", label: "Tres Cerros mark", tone: "blue" },
-  { icon: "laPlaya", label: "La Playa mark", tone: "green" },
-  { icon: "lerma", label: "Lerma mark", tone: "orange" },
-  { icon: "sello", label: "Sello mark", tone: "blue" },
-  { icon: "agave", label: "Agave mark", tone: "green" },
-  { icon: "lavado", label: "Lavado mark", tone: "orange" },
+  { icon: "dosCaminos", label: "Dos Caminos mark", tone: "vermillion" },
+  { icon: "tresCerros", label: "Tres Cerros mark", tone: "coral" },
+  { icon: "laPlaya", label: "La Playa mark", tone: "ember" },
+  { icon: "lerma", label: "Lerma mark", tone: "vermillion" },
+  { icon: "sello", label: "Sello mark", tone: "coral" },
+  { icon: "agave", label: "Agave mark", tone: "ember" },
+  { icon: "lavado", label: "Lavado mark", tone: "vermillion" },
 ] as const;
 
-function BrandIcon({ icon, label, size = 22, muted = false, tone = "ink" }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean; tone?: keyof typeof BRAND_ICON_TONES }) {
+function BrandIcon({ icon, label, size = 22, muted = false, tone = "cacao" }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean; tone?: keyof typeof BRAND_ICON_TONES }) {
   return <img src={BRAND_ICONS[icon]} alt={label} style={{ width: size, height: size, objectFit: "contain", opacity: muted ? 0.58 : 1, flex: "0 0 auto", filter: BRAND_ICON_TONES[tone] }} />;
 }
 
@@ -113,14 +113,14 @@ function FooterMarkRail() {
 
 function Footer() {
   return <footer className="site-footer">
-    <div className="footer-news"><p className="eyebrow">DROP NOTES</p><h2>IN THE KNOW, ONLY WHEN IT MATTERS.</h2><Newsletter compact /></div>
+    <div className="footer-news"><p className="eyebrow">DROP NOTES</p><h2>IN THE KNOW, ONLY WHEN IT MATTERS</h2><Newsletter compact /></div>
     <div className="footer-links">
       <div><p className="footer-label">SHOP</p><Link href="/collections/blanks">Blanks</Link><Link href="/collections/archivo">Archivo</Link><Link href="/collections/all">Shop All</Link></div>
       <div><p className="footer-label">INFO</p><Link href="/pages/fit">Fit Guide</Link><a href="#care">Care</a><a href="#shipping">Shipping &amp; Returns</a></div>
       <div><p className="footer-label">COMPANY</p><Link href="/pages/about">About</Link><a href="mailto:hello@doscaminos.example">Contact</a><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></div>
     </div>
     <FooterMarkRail />
-    <div className="footer-bottom"><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="dosCaminos" label="Dos Caminos mark" size={15} muted />© 2026 DOS CAMINOS</span><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="lavado" label="Care mark" size={15} muted />MADE FOR EVERYDAY</span></div>
+    <div className="footer-bottom"><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="dosCaminos" label="Dos Caminos mark" size={15} muted />© 2026 DOS CAMINOS</span><span style={{ display: "inline-flex", gap: 7, alignItems: "center" }}><BrandIcon icon="lavado" label="Care mark" size={15} muted />Ecuandureo, Michoacán · Est. 1562</span></div>
   </footer>;
 }
 
@@ -174,27 +174,27 @@ export function HomePage() {
   const blanks = products.filter(product => matchesCollection(product.productType, product.handle, "blanks"));
   const archivo = products.filter(product => matchesCollection(product.productType, product.handle, "archivo"));
   return <>
-    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><img className="hero-primary-wordmark" src={PRIMARY_WORDMARK_URL} alt="Dos Caminos" /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
+    <section className="hero type-hero"><div className="hero-copy"><img className="hero-primary-wordmark" src={PRIMARY_WORDMARK_URL} alt="Dos Caminos" /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
     <main>
       <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div style={{ display: "flex", alignItems: "center", gap: 13, paddingBottom: 6 }}><BrandIcon icon="tresCerros" label="Tres Cerros mark" size={24} muted /><BrandIcon icon="laPlaya" label="La Playa mark" size={24} muted /><BrandIcon icon="lerma" label="Lerma mark" size={24} muted /></div><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
-      <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE." href="/collections/blanks" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={blanks} />}</section>
-      <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="WORN REFERENCES." href="/collections/archivo" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={archivo} archive />}</section>
+      <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE" href="/collections/blanks" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={blanks} />}</section>
+      <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="ARCHIVO — ORIGINAL GRAPHICS" href="/collections/archivo" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={archivo} archive />}</section>
       <FitStrip />
-      <section className="email-block"><p className="eyebrow">DROP NOTIFICATIONS</p><h2>THE NEXT ONE,<br />IN YOUR INBOX.</h2><p>New pieces and release time. Nothing else.</p><Newsletter /></section>
+      <section className="email-block"><p className="eyebrow">DROP NOTIFICATIONS</p><h2>THE NEXT ONE,<br />IN YOUR INBOX</h2><p>New pieces and release time. Nothing else.</p><Newsletter /></section>
     </main>
   </>;
 }
 
 function GridSkeleton() { return <div className="product-grid" aria-label="Loading products"><div className="skeleton-card" /><div className="skeleton-card" /><div className="skeleton-card" /></div>; }
 
-function FitStrip() { return <section className="fit-strip"><div className="fit-strip-title"><p className="eyebrow">FIT, IN NUMBERS</p><h2>CROPPED. FITTED.<br />MEASURED OPENLY.</h2><Link href="/pages/fit" className="inline-link">VIEW FIT GUIDE <ArrowUpRight size={15} /></Link></div><div className="mini-measurements"><div className="measure-row measure-head"><span>SIZE</span><span>BODY</span><span>CHEST</span><span>SHOULDER</span></div>{FIT_MEASURES.map(row => <div className="measure-row" key={row.size}><span>{row.size}</span><span>{row.body}</span><span>{row.chest}</span><span>{row.shoulder}</span></div>)}</div></section>; }
+function FitStrip() { return <section className="fit-strip"><div className="fit-strip-title"><p className="eyebrow">FIT, IN NUMBERS</p><h2>CROPPED. FITTED.<br />MEASURED OPENLY</h2><Link href="/pages/fit" className="inline-link">VIEW FIT GUIDE <ArrowUpRight size={15} /></Link></div><div className="mini-measurements"><div className="measure-row measure-head"><span>SIZE</span><span>BODY</span><span>CHEST</span><span>SHOULDER</span></div>{FIT_MEASURES.map(row => <div className="measure-row" key={row.size}><span>{row.size}</span><span>{row.body}</span><span>{row.chest}</span><span>{row.shoulder}</span></div>)}</div></section>; }
 
 export function CollectionPage({ collection }: { collection: "blanks" | "archivo" | "all" }) {
   const [location] = useLocation();
   const { data: products = [], isLoading, isError } = trpc.commerce.products.list.useQuery({ first: 50 });
   const query = new URLSearchParams(location.split("?")[1] ?? "").get("q")?.toLowerCase().trim() ?? "";
   const filtered = products.filter(product => matchesCollection(product.productType, product.handle, collection) && (!query || `${product.title} ${product.productType}`.toLowerCase().includes(query)));
-  const heading = collection === "all" ? "ALL PIECES." : collection === "blanks" ? "BLANKS." : "ARCHIVO.";
+  const heading = collection === "all" ? "ALL PIECES" : collection === "blanks" ? "BLANKS" : "ARCHIVO";
   const description = collection === "blanks" ? "Cropped, fitted blanks in washed color." : collection === "archivo" ? "Graphic studies, printed in ink." : "The current release.";
   return <main className={`inner-page collection-page ${collection === "archivo" ? "collection-archivo" : ""}`}><header className="page-intro"><p className="eyebrow">{collection === "archivo" ? "THE GRAPHIC LINE" : collection === "blanks" ? "THE CORE LINE" : "DOS CAMINOS"}</p><h1>{query ? `RESULTS FOR “${query.toUpperCase()}”` : heading}</h1><p>{description}</p></header>{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={filtered} archive={collection === "archivo"} />}</main>;
 }
@@ -219,15 +219,15 @@ export function ProductPage() {
   return <main className="product-page"><div className="product-gallery">{gallery.slice(0, 6).map((image, index) => <div className={`gallery-image gallery-${index + 1}`} key={`${image.url}-${index}`}><img src={image.url} alt={index === 0 ? image.altText ?? product.title : ""} /></div>)}</div><section className="product-info"><p className="eyebrow">{detail?.line ?? product.productType}</p><div className="product-title-row"><h1>{product.title}</h1><strong>{formatMoney(variant?.price ?? product.priceRange.min)}</strong></div><p className="product-description">{detail?.note ?? product.description}</p>{sizes.length > 0 && <fieldset className="size-selector"><legend>SIZE</legend><div>{sizes.map(value => <button key={value} type="button" onClick={() => setSize(value)} className={size === value ? "selected" : ""} aria-pressed={size === value}>{value}</button>)}</div></fieldset>}<button className="primary-button add-button" disabled={!variant?.availableForSale || loading} onClick={() => variant && addItem(variant.id)}>{!variant?.availableForSale ? "SOLD OUT" : loading ? "ADDING" : "ADD TO CART"}<ArrowUpRight size={16} /></button><button className="guide-toggle" onClick={() => setSizeGuideOpen(open => !open)} aria-expanded={sizeGuideOpen}>SIZE GUIDE <ChevronDown size={16} className={sizeGuideOpen ? "turn" : ""} /></button>{sizeGuideOpen && <SizeTable compact />}<section className="product-specs"><div><span>FABRIC</span><p>{detail?.fabric ?? "—"}</p></div><div><span>MAKE</span><p>{detail?.location ?? "—"}</p></div><div id="care"><span>CARE</span><p>{detail?.care ?? "—"}</p></div><div><span>MODEL</span><p>{detail?.model ?? "—"}</p></div></section></section></main>;
 }
 
-export function FitPage() { return <main className="inner-page fit-page"><header className="page-intro"><p className="eyebrow">THE CUT</p><h1>FIT GUIDE.</h1><p>Measurements are taken flat. Double chest and hem width for the full circumference.</p></header><div className="fit-layout"><aside><p className="eyebrow">CROP TEE</p><p>Short in body. Easy through the chest. A clean shoulder line.</p><p>Take your usual size for the intended fit. Size up for more room.</p></aside><SizeTable /><div className="measure-notes"><p className="eyebrow">HOW WE MEASURE</p><div><span>01</span><p>Body length is from high point shoulder to hem.</p></div><div><span>02</span><p>Chest is measured 1 in below the armhole, flat.</p></div><div><span>03</span><p>Shoulder is seam to seam, across the back.</p></div></div></div></main>; }
+export function FitPage() { return <main className="inner-page fit-page"><header className="page-intro"><p className="eyebrow">THE CUT</p><h1>FIT GUIDE</h1><p>Measurements are taken flat. Double chest and hem width for the full circumference.</p></header><div className="fit-layout"><aside><p className="eyebrow">CROP TEE</p><p>Short in body. Easy through the chest. A clean shoulder line.</p><p>Take your usual size for the intended fit. Size up for more room.</p></aside><SizeTable /><div className="measure-notes"><p className="eyebrow">HOW WE MEASURE</p><div><span>01</span><p>Body length is from high point shoulder to hem.</p></div><div><span>02</span><p>Chest is measured 1 in below the armhole, flat.</p></div><div><span>03</span><p>Shoulder is seam to seam, across the back.</p></div></div></div></main>; }
 
 function SizeTable({ compact = false }: { compact?: boolean }) { return <div className={`size-table-wrap ${compact ? "compact-size-table" : ""}`}><table><caption className="sr-only">Crop Tee measurements</caption><thead><tr><th>SIZE</th><th>BODY</th><th>CHEST</th><th>SHOULDER</th>{!compact && <><th>SLEEVE</th><th>HEM</th></>}</tr></thead><tbody>{FIT_MEASURES.map(row => <tr key={row.size}><th>{row.size}</th><td>{row.body}</td><td>{row.chest}</td><td>{row.shoulder}</td>{!compact && <><td>{row.sleeve}</td><td>{row.hem}</td></>}</tr>)}</tbody></table></div>; }
 
-export function AboutPage() { return <main className="inner-page about-page"><header className="page-intro"><p className="eyebrow">DOS CAMINOS</p><h1>MADE FOR<br />THE REPEAT.</h1></header><div className="about-grid"><div className="about-photo"><img src={HERO_IMAGE} alt="A faded blue-gray tee in a quiet sunlit studio" /></div><div className="about-copy"><p>Dos Caminos makes pieces for the parts of a wardrobe that get lived in. The starting point is a cropped, fitted tee in washed cotton: simple enough to reach for without thinking, specific enough to keep.</p><p>Blanks keep the form quiet. Archivo gives it a different surface—small graphic studies with the same worn-in hand. Everything is made to be worn often, washed cold, and kept close.</p><p>No more than needed.</p></div></div></main>; }
+export function AboutPage() { return <main className="inner-page about-page"><header className="page-intro"><p className="eyebrow">DOS CAMINOS</p><h1>MADE FOR<br />THE REPEAT</h1></header><div className="about-grid"><div className="about-photo"><img src={HERO_IMAGE} alt="A faded blue-gray tee in a quiet sunlit studio" /></div><div className="about-copy"><p>Dos Caminos makes pieces for the parts of a wardrobe that get lived in. The starting point is a cropped, fitted tee in washed cotton: simple enough to reach for without thinking, specific enough to keep.</p><p>Blanks keep the form quiet. Archivo gives it a different surface—small graphic studies with the same worn-in hand. Everything is made to be worn often, washed cold, and kept close.</p><p>No more than needed.</p></div></div></main>; }
 
-export function CartPage() { const { cart, loading, updateQuantity, removeItem, proceedToCheckout } = useCart(); const items = cart?.items ?? []; return <main className="inner-page cart-page"><header className="page-intro"><p className="eyebrow">YOUR SELECTION</p><h1>CART.</h1></header>{items.length === 0 ? <div className="cart-page-empty"><p>Your cart is empty.</p><Link href="/collections/all" className="inline-link">SHOP THE DROP <ArrowUpRight size={15} /></Link></div> : <div className="cart-page-grid"><section>{items.map(item => <CartLine key={item.lineId} item={item} loading={loading} onUpdate={updateQuantity} onRemove={removeItem} />)}</section><aside className="cart-page-summary"><div><span>SUBTOTAL</span><strong>{formatMoney(cart?.subtotal)}</strong></div><button onClick={proceedToCheckout} disabled={loading} className="primary-button">CHECKOUT <ArrowUpRight size={16} /></button><p>Taxes and shipping calculated at checkout.</p></aside></div>}</main>; }
+export function CartPage() { const { cart, loading, updateQuantity, removeItem, proceedToCheckout } = useCart(); const items = cart?.items ?? []; return <main className="inner-page cart-page"><header className="page-intro"><p className="eyebrow">YOUR SELECTION</p><h1>CART</h1></header>{items.length === 0 ? <div className="cart-page-empty"><p>Your cart is empty.</p><Link href="/collections/all" className="inline-link">SHOP THE DROP <ArrowUpRight size={15} /></Link></div> : <div className="cart-page-grid"><section>{items.map(item => <CartLine key={item.lineId} item={item} loading={loading} onUpdate={updateQuantity} onRemove={removeItem} />)}</section><aside className="cart-page-summary"><div><span>SUBTOTAL</span><strong>{formatMoney(cart?.subtotal)}</strong></div><button onClick={proceedToCheckout} disabled={loading} className="primary-button">CHECKOUT <ArrowUpRight size={16} /></button><p>Taxes and shipping calculated at checkout.</p></aside></div>}</main>; }
 
-export function NotFoundPage() { return <main className="inner-page not-found"><p className="eyebrow">404</p><h1>NOT FOUND.</h1><Link href="/" className="primary-button">BACK HOME <ArrowRight size={16} /></Link></main>; }
+export function NotFoundPage() { return <main className="inner-page not-found"><p className="eyebrow">404</p><h1>NOT FOUND</h1><Link href="/" className="primary-button">BACK HOME <ArrowRight size={16} /></Link></main>; }
 
 export function scrollToPageTop(target: Pick<Window, "scrollTo"> | undefined = typeof window === "undefined" ? undefined : window) {
   target?.scrollTo({ top: 0, left: 0, behavior: "auto" });
