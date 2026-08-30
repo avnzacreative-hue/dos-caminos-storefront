@@ -7,6 +7,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useRoute } from "wouter";
 
 const HERO_IMAGE = "/manus-storage/dos-caminos-hero_ff1bf96d.jpg";
+export const PRIMARY_WORDMARK_URL = "/manus-storage/dos-caminos-primary-lockup_1923c629.png";
 
 function formatMoney(money?: Money | null) {
   if (!money) return "—";
@@ -61,7 +62,7 @@ function Header() {
     <header className="site-header on-bone stable-header">
       <div className="announcement">NEXT DROP — SEPTEMBER 18, 10:00 AM PT</div>
       <div className="nav-frame">
-        <Link href="/" className="wordmark" aria-label="Dos Caminos home" style={{ display: "inline-flex", alignItems: "center", width: "clamp(103px, 10vw, 134px)" }}><img src="/manus-storage/dc-wordmark-primary_199b26eb.svg" alt="Dos Caminos" /></Link>
+        <Link href="/" className="wordmark" aria-label="Dos Caminos home" style={{ display: "inline-flex", alignItems: "center", width: "clamp(126px, 11vw, 158px)" }}><img src={PRIMARY_WORDMARK_URL} alt="Dos Caminos" /></Link>
         <nav className="main-nav" aria-label="Primary navigation">
           <Link href="/collections/blanks">BLANKS</Link>
           <Link href="/collections/archivo">ARCHIVO</Link>
@@ -156,6 +157,12 @@ function ProductGrid({ products, archive = false }: { products: Product[]; archi
   return <div className={`product-grid ${archive ? "tight-grid" : ""}`}>{products.map(product => <ProductCard key={product.id} product={product} archive={archive} />)}</div>;
 }
 
+export const CATALOG_UNAVAILABLE_COPY = "The catalog is temporarily unavailable. Please refresh the page or return shortly.";
+
+function CatalogUnavailable() {
+  return <div className="catalog-unavailable" role="status"><p className="eyebrow">CATALOG UPDATE</p><p>{CATALOG_UNAVAILABLE_COPY}</p><button type="button" className="inline-link" onClick={() => window.location.reload()}>REFRESH PAGE <ArrowRight size={15} /></button></div>;
+}
+
 function SectionHeading({ overline, title, href }: { overline: string; title: string; href: string }) {
   const icon = overline.includes("ARCHIVO") ? "sello" : "agave";
   const label = icon === "sello" ? "Archivo seal" : "Natural fiber mark";
@@ -163,15 +170,15 @@ function SectionHeading({ overline, title, href }: { overline: string; title: st
 }
 
 export function HomePage() {
-  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({ first: 12 });
+  const { data: products = [], isLoading, isError } = trpc.commerce.products.list.useQuery({ first: 12 });
   const blanks = products.filter(product => matchesCollection(product.productType, product.handle, "blanks"));
   const archivo = products.filter(product => matchesCollection(product.productType, product.handle, "archivo"));
   return <>
-    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><img src="/manus-storage/dc-wordmark-primary_199b26eb.svg" alt="Dos Caminos" style={{ display: "block", width: "clamp(270px, 53vw, 740px)", maxWidth: "100%", height: "auto" }} /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
+    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(239,234,225,.9) 0%, rgba(239,234,225,.36) 58%, rgba(35,43,59,.13) 100%), url(${HERO_IMAGE})` }}><div className="hero-copy"><img className="hero-primary-wordmark" src={PRIMARY_WORDMARK_URL} alt="Dos Caminos" /><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
     <main>
       <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div style={{ display: "flex", alignItems: "center", gap: 13, paddingBottom: 6 }}><BrandIcon icon="tresCerros" label="Tres Cerros mark" size={24} muted /><BrandIcon icon="laPlaya" label="La Playa mark" size={24} muted /><BrandIcon icon="lerma" label="Lerma mark" size={24} muted /></div><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
-      <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE." href="/collections/blanks" />{isLoading ? <GridSkeleton /> : <ProductGrid products={blanks} />}</section>
-      <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="WORN REFERENCES." href="/collections/archivo" />{isLoading ? <GridSkeleton /> : <ProductGrid products={archivo} archive />}</section>
+      <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE." href="/collections/blanks" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={blanks} />}</section>
+      <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="WORN REFERENCES." href="/collections/archivo" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={archivo} archive />}</section>
       <FitStrip />
       <section className="email-block"><p className="eyebrow">DROP NOTIFICATIONS</p><h2>THE NEXT ONE,<br />IN YOUR INBOX.</h2><p>New pieces and release time. Nothing else.</p><Newsletter /></section>
     </main>
@@ -184,12 +191,12 @@ function FitStrip() { return <section className="fit-strip"><div className="fit-
 
 export function CollectionPage({ collection }: { collection: "blanks" | "archivo" | "all" }) {
   const [location] = useLocation();
-  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({ first: 50 });
+  const { data: products = [], isLoading, isError } = trpc.commerce.products.list.useQuery({ first: 50 });
   const query = new URLSearchParams(location.split("?")[1] ?? "").get("q")?.toLowerCase().trim() ?? "";
   const filtered = products.filter(product => matchesCollection(product.productType, product.handle, collection) && (!query || `${product.title} ${product.productType}`.toLowerCase().includes(query)));
   const heading = collection === "all" ? "ALL PIECES." : collection === "blanks" ? "BLANKS." : "ARCHIVO.";
   const description = collection === "blanks" ? "Cropped, fitted blanks in washed color." : collection === "archivo" ? "Graphic studies, printed in ink." : "The current release.";
-  return <main className={`inner-page collection-page ${collection === "archivo" ? "collection-archivo" : ""}`}><header className="page-intro"><p className="eyebrow">{collection === "archivo" ? "THE GRAPHIC LINE" : collection === "blanks" ? "THE CORE LINE" : "DOS CAMINOS"}</p><h1>{query ? `RESULTS FOR “${query.toUpperCase()}”` : heading}</h1><p>{description}</p></header>{isLoading ? <GridSkeleton /> : <ProductGrid products={filtered} archive={collection === "archivo"} />}</main>;
+  return <main className={`inner-page collection-page ${collection === "archivo" ? "collection-archivo" : ""}`}><header className="page-intro"><p className="eyebrow">{collection === "archivo" ? "THE GRAPHIC LINE" : collection === "blanks" ? "THE CORE LINE" : "DOS CAMINOS"}</p><h1>{query ? `RESULTS FOR “${query.toUpperCase()}”` : heading}</h1><p>{description}</p></header>{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={filtered} archive={collection === "archivo"} />}</main>;
 }
 
 function getSelectedVariant(product: Product, size: string | null): ProductVariant | undefined { return product.variants.find(variant => variant.selectedOptions.some(option => option.name.toLowerCase() === "size" && option.value === size)) ?? product.variants[0]; }

@@ -28,3 +28,6 @@
 - [x] Replace the fading hero-header behavior with a stable header treatment using the Dos Caminos wordmark in place of text-button branding.
 - [x] Add a footer brand-mark display that cycles supplied icon colors through orange, blue, and green while preserving accessible contrast.
 - [x] Review the referenced Circa interaction architecture and validate the adapted Dos Caminos header and footer at desktop and mobile widths.
+- [x] Diagnose and fix the Shopify Storefront API HTTP 403 affecting catalog queries on the home and Archivo collection pages.
+- [x] Add a graceful catalog-error state so shoppers receive actionable feedback instead of an unhandled query error if Shopify is temporarily unavailable.
+- [x] Replace the current Dos Caminos wordmark with the newly supplied primary lockup in the header and homepage hero, optimized for responsive display.

@@ -35,7 +35,7 @@ import {
 /**
  * Storefront API version pinned for the whole adapter.
  */
-export const SHOPIFY_API_VERSION = "2025-04";
+export const SHOPIFY_API_VERSION = "2026-07";
 
 /** Lazy env access — tests can override `process.env` before each case. */
 function getShopifyStoreDomain(): string {
@@ -83,6 +83,8 @@ async function storefrontFetch<T>(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
+        "User-Agent": "DosCaminosStorefront/1.0",
         "X-Shopify-Storefront-Access-Token": getShopifyStorefrontToken(),
       },
       body: JSON.stringify({ query, variables }),

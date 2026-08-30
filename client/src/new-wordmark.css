@@ -1,0 +1,22 @@
+.wordmark img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-primary-wordmark {
+  display: block;
+  width: clamp(320px, 60vw, 840px);
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 580px) {
+  .wordmark {
+    width: 118px !important;
+  }
+
+  .hero-primary-wordmark {
+    width: min(88vw, 356px);
+  }
+}

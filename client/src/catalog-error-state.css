@@ -1,0 +1,24 @@
+.catalog-unavailable {
+  min-height: 260px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 14px;
+  padding: 24px 0;
+}
+
+.catalog-unavailable > p:not(.eyebrow) {
+  max-width: 320px;
+  color: var(--neutral);
+  font-size: 13px;
+}
+
+.archivo-section .catalog-unavailable > p:not(.eyebrow),
+.collection-archivo .catalog-unavailable > p:not(.eyebrow) {
+  color: #c3baae;
+}
+
+.archivo-section .catalog-unavailable .inline-link,
+.collection-archivo .catalog-unavailable .inline-link {
+  color: var(--bone);
+}
