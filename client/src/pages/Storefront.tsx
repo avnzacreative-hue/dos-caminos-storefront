@@ -3,14 +3,16 @@ import { trpc } from "@/lib/trpc";
 import type { CartItem, Money, Product, ProductVariant } from "@shared/commerce/types";
 import { FIT_MEASURES, getProductDetail, getProductGallery, getProductImage, matchesCollection } from "@shared/storefrontData";
 import { clampPdpQuantity, getActivePdpAnchorId, getPdpSpecFields, PDP_ANCHORS, PDP_SIZE_HEADERS } from "@shared/pdp";
+import { getDropCountdown, getDropLaunchState, getEmailSubmissionState } from "@shared/comingSoon";
 import { ArrowRight, ArrowUpRight, ChevronDown, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useRoute } from "wouter";
 
 const HERO_IMAGE = "/manus-storage/dos-caminos-hero_ff1bf96d.jpg";
 const CAMPAIGN_HERO_IMAGE = "/manus-storage/dos-caminos-campaign-hero-v2_ae26db36.webp";
 const MOBILE_CAMPAIGN_HERO_IMAGE = "/manus-storage/dos-caminos-campaign-hero-mobile-v2_64ada1c7.webp";
 export const PRIMARY_WORDMARK_URL = "/manus-storage/dos-caminos-primary-lockup_1923c629.png";
+export const DROP_01_TARGET_DATETIME_AMERICA_LOS_ANGELES = "2026-09-18T10:00:00-07:00";
 
 function formatMoney(money?: Money | null) {
   if (!money) return "—";
@@ -44,8 +46,8 @@ export const FOOTER_BRAND_MARKS = [
   { icon: "lavado", label: "Lavado mark", tone: "vermillion" },
 ] as const;
 
-function BrandIcon({ icon, label, size = 22, muted = false, tone = "cacao" }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean; tone?: keyof typeof BRAND_ICON_TONES }) {
-  return <img src={BRAND_ICONS[icon]} alt={label} style={{ width: size, height: size, objectFit: "contain", opacity: muted ? 0.58 : 1, flex: "0 0 auto", filter: BRAND_ICON_TONES[tone] }} />;
+function BrandIcon({ icon, label, size = 22, muted = false, tone = "cacao", decorative = false }: { icon: keyof typeof BRAND_ICONS; label: string; size?: number; muted?: boolean; tone?: keyof typeof BRAND_ICON_TONES; decorative?: boolean }) {
+  return <img src={BRAND_ICONS[icon]} alt={decorative ? "" : label} aria-hidden={decorative || undefined} style={{ width: size, height: size, objectFit: "contain", opacity: muted ? 0.58 : 1, flex: "0 0 auto", filter: BRAND_ICON_TONES[tone] }} />;
 }
 
 function Header() {
@@ -172,6 +174,33 @@ function SectionHeading({ overline, title, href }: { overline: string; title: st
   return <div className="section-heading"><div><div style={{ display: "flex", alignItems: "center", gap: 8 }}><BrandIcon icon={icon} label={label} size={20} muted={overline.includes("ARCHIVO")} /><p className="eyebrow">{overline}</p></div><h2>{title}</h2></div><Link href={href} className="inline-link">VIEW ALL <ArrowUpRight size={15} /></Link></div>;
 }
 
+export function ComingSoonBlock({ targetDatetime = DROP_01_TARGET_DATETIME_AMERICA_LOS_ANGELES }: { targetDatetime?: string }) {
+  const [now, setNow] = useState(() => Date.now());
+  const [email, setEmail] = useState("");
+  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showSms, setShowSms] = useState(false);
+  const countdown = getDropCountdown(targetDatetime, now);
+  const launchState = getDropLaunchState(countdown);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 1_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  function submitEmail(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const submission = getEmailSubmissionState(email);
+    setErrorMessage(submission.message);
+    setFormStatus(submission.status);
+    if (submission.status === "error") return;
+    window.setTimeout(() => setFormStatus("success"), 650);
+  }
+
+  const units = [{ label: "DAYS", value: countdown.days }, { label: "HOURS", value: countdown.hours }, { label: "MINS", value: countdown.minutes }, { label: "SECS", value: countdown.seconds }];
+  return <section className="coming-soon-block" aria-labelledby="drop-01-heading"><div className="coming-soon-inner"><p className="coming-soon-label">COMING SOON</p><h2 id="drop-01-heading" className="coming-soon-headline"><span>DROP</span><span>01</span></h2>{launchState ? <p className="coming-soon-live">{launchState.title}</p> : <div className="coming-soon-countdown" aria-label={`Drop 01 begins in ${countdown.days} days, ${countdown.hours} hours, ${countdown.minutes} minutes, and ${countdown.seconds} seconds`}>{units.map(unit => <div className="coming-soon-unit" key={unit.label}><span className="coming-soon-number">{unit.value}</span><span className="coming-soon-unit-label">{unit.label}</span></div>)}</div>}<p className="coming-soon-details"><span>SEPTEMBER 18 · 10:00 AM PT</span><span>FADED CROP TEE — ARCHIVO NO. 01</span></p><div className="coming-soon-signup">{launchState ? <Link href={launchState.actionPath} className="primary-button">{launchState.actionLabel} <ArrowUpRight size={16} /></Link> : formStatus === "success" ? <p className="coming-soon-signup-success">You’re on the list.</p> : showSms ? <><div className="coming-soon-phone"><label className="sr-only" htmlFor="drop-phone">Phone number</label><input id="drop-phone" type="tel" placeholder="Phone number" disabled /></div><p className="coming-soon-sms-note">Text alerts coming soon — use email for now</p>{/* TCPA: wire to compliant SMS provider (Klaviyo SMS / Postscript / Attentive) before enabling. Do not collect numbers without express written consent. */}<label className="coming-soon-consent"><input type="checkbox" disabled /><span>Yes, text me about drops. Msg &amp; data rates may apply.<small>Msg frequency varies. Reply STOP to cancel, HELP for help.</small></span></label><button type="button" className="coming-soon-sms-toggle" onClick={() => setShowSms(false)}>Use email instead</button></> : <><form className="coming-soon-email-form" noValidate onSubmit={submitEmail}><label className="sr-only" htmlFor="drop-01-email">Email address</label><input id="drop-01-email" type="email" value={email} onChange={event => { setEmail(event.target.value); if (formStatus === "error") { setFormStatus("idle"); setErrorMessage(""); } }} placeholder="Email address" /><button className="coming-soon-notify-button" type="submit" disabled={formStatus === "loading"}>{formStatus === "loading" ? "..." : "NOTIFY ME"}</button></form><p className="coming-soon-form-message" role="status">{formStatus === "error" ? errorMessage : ""}</p><button type="button" className="coming-soon-sms-toggle" onClick={() => setShowSms(true)}>Get a text instead</button></>}</div><div className="coming-soon-icon-row" aria-hidden="true"><BrandIcon icon="tresCerros" label="" size={20} muted decorative /><BrandIcon icon="laPlaya" label="" size={20} muted decorative /><BrandIcon icon="lerma" label="" size={20} muted decorative /></div></div></section>;
+}
+
 export function HomePage() {
   const { data: products = [], isLoading, isError } = trpc.commerce.products.list.useQuery({ first: 12 });
   const blanks = products.filter(product => matchesCollection(product.productType, product.handle, "blanks"));
@@ -179,7 +208,7 @@ export function HomePage() {
   return <>
     <section className="hero campaign-hero"><picture><source media="(max-width: 699px)" srcSet={MOBILE_CAMPAIGN_HERO_IMAGE} /><img className="campaign-hero-media" src={CAMPAIGN_HERO_IMAGE} alt="Dos Caminos campaign at a shuttered storefront" /></picture><div className="hero-copy"><Link href="/collections/blanks" className="primary-button hero-cta">SHOP BLANKS <ArrowUpRight size={16} /></Link></div></section>
     <main>
-      <section className="drop-block"><p className="eyebrow">NEXT DROP</p><div style={{ display: "flex", alignItems: "center", gap: 13, paddingBottom: 6 }}><BrandIcon icon="tresCerros" label="Tres Cerros mark" size={24} muted /><BrandIcon icon="laPlaya" label="La Playa mark" size={24} muted /><BrandIcon icon="lerma" label="Lerma mark" size={24} muted /></div><div className="drop-details"><h2>DROP 03</h2><p>SEPTEMBER 18<br />10:00 AM PT</p><p>FADED CROP TEE<br />ARCHIVO NO. 01</p></div></section>
+      <ComingSoonBlock />
       <section className="catalog-section"><SectionHeading overline="01 / BLANKS" title="THE EVERYDAY TEE" href="/collections/blanks" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={blanks} />}</section>
       <section className="catalog-section archivo-section"><SectionHeading overline="02 / ARCHIVO" title="ARCHIVO — ORIGINAL GRAPHICS" href="/collections/archivo" />{isLoading ? <GridSkeleton /> : isError ? <CatalogUnavailable /> : <ProductGrid products={archivo} archive />}</section>
       <FitStrip />

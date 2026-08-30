@@ -59,3 +59,15 @@
 - [x] Preserve the full campaign composition across common desktop, tablet, and mobile browser widths without subject or artwork clipping.
 - [x] Use the newly supplied portrait campaign image for the mobile homepage hero while retaining the landscape campaign composition on tablet and desktop.
 - [x] Replace the current mobile-only campaign hero with the newly supplied portrait composition while preserving the approved landscape hero on tablet and desktop.
+- [x] Replace only the homepage Next Drop block with the centered full-width Drop 01 coming-soon layout and preserve every other page and section.
+- [x] Implement an absolute-time America/Los_Angeles Drop 01 countdown with configurable target, padded tabular units, and live-state CTA behavior.
+- [x] Implement email form validation, loading, success, and error states, with the required non-functional disabled SMS and unchecked consent placeholder.
+- [x] Reposition the existing three decorative brand icons below the signup interaction and match the supplied typography, colors, and responsive layout rules.
+- [x] Test pre- and post-target countdown states, email and SMS form behavior, and the section’s 375px mobile layout.
+- [x] Add state-transition coverage for empty and invalid email submission, loading, success, and the disabled SMS toggle flow.
+- [x] Add rendered launch-state coverage confirming the post-target block replaces the countdown with the live label and collection CTA.
+- [x] Record a mobile 375px coming-soon interaction review after the email and SMS state changes.
+- [x] Add rendered component tests covering email error, loading-to-success, and SMS toggle open/close states.
+- [x] Add rendered post-target coverage confirming the coming-soon block swaps to the live label and /collections/blanks CTA.
+- [x] Capture and record a 375px mobile review after the rendered coming-soon interaction coverage is complete.
+- [x] Capture and record a fresh 375px homepage screenshot after the rendered coming-soon tests pass, confirming the mobile launch block remains correctly composed.

@@ -14,6 +14,7 @@ import "./new-wordmark.css";
 import "./catalog-error-state.css";
 import "./pdp-revision.css";
 import "./campaign-hero.css";
+import "./coming-soon.css";
 
 const queryClient = new QueryClient();
 

@@ -1,0 +1,29 @@
+.coming-soon-block { background: var(--bone); padding: 160px 20px; text-align: center; }
+.coming-soon-inner { width: min(100%, 1100px); margin: 0 auto; display: grid; justify-items: center; }
+.coming-soon-label { margin-bottom: 24px; color: var(--clay); font-size: 11px; font-weight: 600; letter-spacing: .05em; line-height: 1; }
+.coming-soon-headline { display: flex; justify-content: center; gap: .18em; margin: 0; padding-right: .18em; color: var(--ember); font-family: Archivo, Inter, sans-serif; font-size: clamp(72px, 13vw, 200px); font-weight: 400; letter-spacing: .18em; line-height: .9; text-align: center; text-transform: uppercase; }
+.coming-soon-countdown { display: flex; justify-content: center; gap: 32px; margin: 57px 0 33px; }
+.coming-soon-unit { min-width: 66px; display: grid; gap: 7px; }
+.coming-soon-number { color: var(--cacao); font-family: Archivo, Inter, sans-serif; font-size: 40px; font-weight: 400; font-variant-numeric: tabular-nums; line-height: 1; }
+.coming-soon-unit-label { color: var(--clay); font-size: 11px; font-weight: 600; letter-spacing: .05em; line-height: 1; }
+.coming-soon-live { margin: 57px 0 33px; color: var(--ember); font-family: Archivo, Inter, sans-serif; font-size: clamp(31px, 4vw, 52px); font-weight: 400; letter-spacing: .05em; line-height: 1; }
+.coming-soon-details { display: grid; gap: 8px; margin: 0 0 43px; color: var(--cacao); font-size: 13px; font-weight: 500; letter-spacing: .05em; line-height: 1.35; text-transform: uppercase; }
+.coming-soon-details span:last-child { color: var(--clay); }
+.coming-soon-signup { width: min(100%, 440px); }
+.coming-soon-email-form { display: flex; align-items: stretch; gap: 11px; border-bottom: 1px solid var(--clay); }
+.coming-soon-email-form input, .coming-soon-phone input { width: 100%; min-width: 0; padding: 13px 0; border: 0; outline: 0; background: transparent; color: var(--cacao); font-size: 13px; line-height: 1.35; }
+.coming-soon-email-form input::placeholder, .coming-soon-phone input::placeholder { color: var(--clay); opacity: 1; }
+.coming-soon-notify-button { flex: 0 0 auto; min-height: 43px; padding: 0 17px; border: 0; background: var(--cacao); color: var(--bone); font-size: 11px; font-weight: 600; letter-spacing: .05em; transition: background-color 160ms var(--ease); }
+.coming-soon-notify-button:hover:not(:disabled) { background: var(--vermillion); }.coming-soon-notify-button:disabled { cursor: not-allowed; opacity: .58; }
+.coming-soon-form-message { min-height: 19px; margin-top: 8px; color: var(--ember); font-size: 12px; text-align: left; }
+.coming-soon-signup-success { margin: 0; color: var(--cacao); font-size: 14px; font-weight: 500; }
+.coming-soon-sms-toggle { margin: 12px 0 0; padding: 0; border: 0; background: transparent; color: var(--ember); font-size: 12px; line-height: 1.35; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.coming-soon-phone { border-bottom: 1px solid var(--clay); }.coming-soon-phone input:disabled { cursor: not-allowed; color: var(--clay); }
+.coming-soon-sms-note { margin: 9px 0 0; color: var(--clay); font-size: 12px; text-align: left; }
+.coming-soon-consent { display: grid; grid-template-columns: 15px 1fr; gap: 8px; margin-top: 17px; color: var(--clay); font-size: 12px; line-height: 1.42; text-align: left; }
+.coming-soon-consent input { width: 14px; height: 14px; margin: 2px 0 0; accent-color: var(--cacao); }.coming-soon-consent small { display: block; margin-top: 4px; font-size: 11px; line-height: 1.4; }
+.coming-soon-icon-row { display: flex; justify-content: center; gap: 28px; margin-top: 45px; }
+.coming-soon-icon-row img { opacity: .65; }
+@media (min-width: 768px) and (max-width: 1024px) { .coming-soon-email-form { display: grid; gap: 14px; border-bottom: 0; }.coming-soon-email-form input { border-bottom: 1px solid var(--clay); }.coming-soon-notify-button { width: 100%; }.coming-soon-form-message { text-align: center; } }
+@media (max-width: 767px) { .coming-soon-block { padding: 96px 20px; }.coming-soon-headline { display: grid; gap: 7px; padding-right: .12em; font-size: clamp(70px, 22vw, 104px); letter-spacing: .12em; line-height: .84; }.coming-soon-countdown { width: 100%; gap: 0; justify-content: space-between; margin: 42px 0 31px; }.coming-soon-unit { min-width: 0; }.coming-soon-number { font-size: 28px; }.coming-soon-unit-label { font-size: 9px; }.coming-soon-live { margin: 42px 0 31px; font-size: 32px; }.coming-soon-details { margin-bottom: 34px; font-size: 12px; }.coming-soon-email-form { display: grid; gap: 14px; border-bottom: 0; }.coming-soon-email-form input { border-bottom: 1px solid var(--clay); }.coming-soon-notify-button { width: 100%; min-height: 48px; }.coming-soon-form-message { text-align: center; }.coming-soon-sms-toggle { margin-top: 14px; }.coming-soon-icon-row { margin-top: 37px; } }
+@media (prefers-reduced-motion: reduce) { .coming-soon-notify-button { transition: none; } }
