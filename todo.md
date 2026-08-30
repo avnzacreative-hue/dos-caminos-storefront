@@ -71,3 +71,4 @@
 - [x] Add rendered post-target coverage confirming the coming-soon block swaps to the live label and /collections/blanks CTA.
 - [x] Capture and record a 375px mobile review after the rendered coming-soon interaction coverage is complete.
 - [x] Capture and record a fresh 375px homepage screenshot after the rendered coming-soon tests pass, confirming the mobile launch block remains correctly composed.
+- [x] Replace the desktop homepage campaign hero with the newly supplied landscape composition while retaining the approved mobile portrait image.

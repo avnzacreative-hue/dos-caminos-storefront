@@ -9,7 +9,7 @@ import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useRoute } from "wouter";
 
 const HERO_IMAGE = "/manus-storage/dos-caminos-hero_ff1bf96d.jpg";
-const CAMPAIGN_HERO_IMAGE = "/manus-storage/dos-caminos-campaign-hero-v2_ae26db36.webp";
+const CAMPAIGN_HERO_IMAGE = "/manus-storage/campaign-hero-desktop-v3_953c1dfd.webp";
 const MOBILE_CAMPAIGN_HERO_IMAGE = "/manus-storage/dos-caminos-campaign-hero-mobile-v2_64ada1c7.webp";
 export const PRIMARY_WORDMARK_URL = "/manus-storage/dos-caminos-primary-lockup_1923c629.png";
 export const DROP_01_TARGET_DATETIME_AMERICA_LOS_ANGELES = "2026-09-18T10:00:00-07:00";
