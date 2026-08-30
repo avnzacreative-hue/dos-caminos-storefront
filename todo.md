@@ -58,3 +58,4 @@
 - [x] Replace the current homepage campaign image with the newly supplied composition and remove the hero wordmark overlay while keeping the site navigation intact.
 - [x] Preserve the full campaign composition across common desktop, tablet, and mobile browser widths without subject or artwork clipping.
 - [x] Use the newly supplied portrait campaign image for the mobile homepage hero while retaining the landscape campaign composition on tablet and desktop.
+- [x] Replace the current mobile-only campaign hero with the newly supplied portrait composition while preserving the approved landscape hero on tablet and desktop.
