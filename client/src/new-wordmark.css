@@ -6,7 +6,7 @@
 
 .hero-primary-wordmark {
   display: block;
-  width: clamp(320px, 60vw, 840px);
+  width: clamp(280px, 41vw, 528px);
   max-width: 100%;
   height: auto;
 }
@@ -17,6 +17,6 @@
   }
 
   .hero-primary-wordmark {
-    width: min(88vw, 356px);
+    width: min(77vw, 310px);
   }
 }

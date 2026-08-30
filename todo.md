@@ -31,3 +31,5 @@
 - [x] Diagnose and fix the Shopify Storefront API HTTP 403 affecting catalog queries on the home and Archivo collection pages.
 - [x] Add a graceful catalog-error state so shoppers receive actionable feedback instead of an unhandled query error if Shopify is temporarily unavailable.
 - [x] Replace the current Dos Caminos wordmark with the newly supplied primary lockup in the header and homepage hero, optimized for responsive display.
+- [x] Verify the user-adjusted hero wordmark scale and restore responsive hero layout behavior if the visual editor introduced fixed-width overrides.
+- [x] Remove the accidental 528px fixed widths from the hero, hero copy, call-to-action, and icon while retaining the intended smaller wordmark scale.
